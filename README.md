@@ -1,4 +1,7 @@
 # COOL Compiler
+<p align="center">
+  <img src="assets/cool-compiler-banner.svg" alt="COOL Compiler" width="100%"/>
+</p>
 
 A compiler for the **COOL** (Classroom Object-Oriented Language) programming language, developed as part of the Stanford CS143 Compilers course.
 
