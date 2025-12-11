@@ -147,14 +147,13 @@
     %type <expression> expr
 
     /* Precedence declarations go here. */
-    /* TODO remove nonassoc, do associatitive in the correct manner */
     %right ASSIGN
-    %nonassoc NOT
+    %right NOT
     %nonassoc LE '<' '='
     %left '+' '-'
     %left '*' '/'
     %nonassoc ISVOID
-    %left '~'
+    %right '~'
     %nonassoc '@'
     %left '.'
      
