@@ -147,6 +147,8 @@
     %type <expression> expr
 
     /* Precedence declarations go here. */
+    %nonassoc LET_PREC
+
     %right ASSIGN
     %right NOT
     %nonassoc LE '<' '='
@@ -186,9 +188,7 @@
     { ; }
     ;
     
-    feature_list : feature ';'
-    { $$ = single_Features($1); }
-    | feature_list feature ';'
+    feature_list : feature_list feature ';'
     { $$ = append_Features($1,single_Features($2)); }
     | {  $$ = nil_Features(); }
     | error ';' { ; }
@@ -228,9 +228,7 @@
     | error ',' { ; }
     ;
 
-    case_list : case
-    { $$ = single_Cases($1); }
-    | case_list case
+    case_list : case_list case
     { $$ = append_Cases($1, single_Cases($2)); }
     | { $$ = nil_Cases(); }
     | error { ; }
@@ -240,13 +238,13 @@
     { $$ = branch($1, $3, $5); }
     ;
 
-    let_expr : OBJECTID ':' TYPEID IN expr
+    let_expr : OBJECTID ':' TYPEID IN expr %prec LET_PREC
     { $$ = let($1, $3, no_expr(), $5); }
-    | OBJECTID ':' TYPEID ASSIGN expr IN expr
+    | OBJECTID ':' TYPEID ASSIGN expr IN expr %prec LET_PREC
     { $$ = let($1, $3, $5, $7); }
-    | OBJECTID ':' TYPEID ',' let_expr
+    | OBJECTID ':' TYPEID ',' let_expr %prec LET_PREC
     { $$ = let($1, $3, no_expr(), $5); }
-    | OBJECTID ':' TYPEID ASSIGN expr ',' let_expr
+    | OBJECTID ':' TYPEID ASSIGN expr ',' let_expr %prec LET_PREC
     { $$ = let($1, $3, $5, $7); }
     | error let_expr { ; };
 
