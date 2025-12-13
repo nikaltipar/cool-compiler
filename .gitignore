@@ -1,0 +1,57 @@
+# Build directories
+build/
+out/
+cmake-build-*/
+install/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Generated files
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+
+# Flex/Bison generated files (in build directory, but just in case)
+*.tab.c
+*.tab.h
+*.yy.c
+
+# Object files
+*.o
+*.obj
+
+# IDE and editor files
+.vs/
+.vscode/
+*.sln
+*.vcxproj*
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# vcpkg local files (the submodule has its own .gitignore)
+vcpkg_installed/
+
+# Dependency files
+*.d
+
+# Debug files
+*.pdb
+*.ilk
+
+# Package/archive files
+*.zip
+*.tar.gz
+*.tgz
+
