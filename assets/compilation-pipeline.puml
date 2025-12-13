@@ -1,0 +1,25 @@
+@startuml compilation-pipeline
+
+left to right direction
+
+skinparam roundcorner 8
+skinparam shadowing false
+
+rectangle "**.cl**\nCOOL Source" as input #e3f2fd
+
+rectangle "**coolc**" as compiler #f5f5f5 {
+    rectangle "**Lexer**\nTokenization" as lexer #fff3e0
+    rectangle "**Parser**\nAST Construction" as parser #fff3e0
+    rectangle "**Semant**\nType Checking" as semant #fff3e0
+    rectangle "**Cgen**\nCode Generation" as cgen #fff3e0
+}
+
+rectangle "**.s**\nMIPS Assembly" as output #e8f5e9
+
+input --> lexer
+lexer --> parser
+parser --> semant
+semant --> cgen
+cgen --> output
+
+@enduml
