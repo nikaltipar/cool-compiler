@@ -1,82 +1,39 @@
-# COOL Compiler
 <p align="center">
   <img src="assets/cool-compiler-banner.svg" alt="COOL Compiler" width="100%"/>
 </p>
 
-A compiler for the **COOL** (Classroom Object-Oriented Language) programming language, developed as part of the Stanford CS143 Compilers course.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/C%2B%2B-23-blue.svg?logo=c%2B%2B" alt="C++23">
+  <img src="https://img.shields.io/badge/build-CMake-064F8C.svg?logo=cmake" alt="CMake">
+  <a href="https://github.com/nikaltipar/cool-compiler/stargazers"><img src="https://img.shields.io/github/stars/nikaltipar/cool-compiler?style=flat&logo=github" alt="GitHub Stars"></a>
+  <a href="https://github.com/nikaltipar/cool-compiler/issues"><img src="https://img.shields.io/github/issues/nikaltipar/cool-compiler" alt="GitHub Issues"></a>
+</p>
 
-There is still active development on this for educationa purposes. If you are interested in the original solutions for these assignments, please check the first commit of this project.
+<h1 align="center">COOL Compiler</h1>
 
-Note: This repository has been created to allow me to experiment with some stuff with compilers. As much as you might be tempted to copy this code for your own assignment, please refrain from doing so. There is a lot to learn from undertaking these projects yourself with minimal input from other sources.
+<p align="center">
+  A compiler for the <strong>COOL</strong> (Classroom Object-Oriented Language) programming language,<br>
+  originally developed as part of the Stanford CS143 Compilers course,<br>
+  now being restructured as a unified C++ project.
+</p>
+
+> **Note:** This repository is for educational experimentation with compilers. If you're taking CS143, please complete the assignments yourself — there's a lot to learn from doing it firsthand.
 
 ## What is COOL?
 
 COOL is a small object-oriented language designed for teaching compiler construction. It includes:
 
-- **Classes and Inheritance** - Single inheritance with a root `Object` class
-- **Static Typing** - Compile-time type checking with `SELF_TYPE` support
-- **Automatic Memory Management** - Garbage collection
-- **Type Matching** - `case` expressions for runtime type dispatch
-
-## Project Structure
-
-The compiler is built in five phases (programming assignments):
-
-```
-assignments/
-├── PA2/          # Lexical Analysis (Flex)
-│   └── cool.flex # Lexer specification
-├── PA3/          # Parsing (Bison)
-│   └── cool.y    # Parser grammar
-├── PA4/          # Semantic Analysis
-│   └── semant.cc # Type checking & scope analysis
-└── PA5/          # Code Generation
-    └── cgen.cc   # MIPS assembly generation
-```
-
-### Supporting Directories
-
-- `bin/` - Prebuilt compiler tools (lexer, parser, semant, cgen, spim)
-- `examples/` - Sample COOL programs
-- `include/` - Header files for each phase
-- `lib/` - Runtime support (`trap.handler` for SPIM)
+- **Classes and Inheritance** — Single inheritance with a root `Object` class
+- **Static Typing** — Compile-time type checking with `SELF_TYPE` support
+- **Automatic Memory Management** — Optional garbage collection
+- **Pattern Matching** — `case` expressions for runtime type dispatch
 
 ## Compilation Pipeline
 
-```
-COOL Source (.cl)
-       │
-       ▼
-   ┌────────┐
-   │ Lexer  │  (PA2: cool.flex → tokens)
-   └────────┘
-       │
-       ▼
-   ┌────────┐
-   │ Parser │  (PA3: cool.y → AST)
-   └────────┘
-       │
-       ▼
-   ┌────────┐
-   │ Semant │  (PA4: type checking, scope)
-   └────────┘
-       │
-       ▼
-   ┌────────┐
-   │ Cgen   │  (PA5: MIPS code generation)
-   └────────┘
-       │
-       ▼
-  MIPS Assembly (.s)
-       │
-       ▼
-   ┌────────┐
-   │ SPIM   │  (MIPS simulator)
-   └────────┘
-       │
-       ▼
-    Output
-```
+<p align="center">
+  <img src="assets/compilation-pipeline.svg" alt="Compilation Pipeline" width="100%"/>
+</p>
 
 ## Example COOL Program
 
@@ -90,43 +47,40 @@ class Main inherits IO {
 
 ## Built-in Classes
 
-COOL provides these default classes:
-
-| Class | Description & methods |
+| Class | Description |
 |-------|-------------|
-| `Object` | Root of class hierarchy (`abort`, `type_name`, `copy`) |
-| `IO` | Input/output (`out_string`, `out_int`, `in_string`, `in_int`) |
+| `Object` | Root class (`abort`, `type_name`, `copy`) |
+| `IO` | I/O operations (`out_string`, `out_int`, `in_string`, `in_int`) |
 | `Int` | 32-bit integers |
 | `String` | Strings (`length`, `concat`, `substr`) |
 | `Bool` | Boolean values |
 
-## Key Features Implemented
+## Features
 
-- [x] **Lexical Analysis** - Tokenization, string/comment handling, error recovery
-- [x] **Parsing** - Full COOL grammar with operator precedence
-- [x] **Semantic Analysis** - Type inference, inheritance checking, scope management
-- [x] **Code Generation** - MIPS assembly with runtime support for:
+- [x] **Lexical Analysis** — Tokenization, string/comment handling, error recovery
+- [x] **Parsing** — Full COOL grammar with operator precedence
+- [x] **Semantic Analysis** — Type inference, inheritance checking, scope management
+- [x] **Code Generation** — MIPS assembly with:
   - Object layout and dispatch tables
   - Dynamic dispatch (virtual methods)
   - Static dispatch (`@Type.method()`)
   - Memory allocation and initialization
   - Case expressions (runtime type checking)
-  - Some built-in method via trap.handler
+  - Optional garbage collection (generational/scanning)
 
 ## Runtime System
 
-The generated code runs on SPIM with `trap.handler` providing:
+Generated code runs on SPIM with `trap.handler` providing:
 
-- Memory management (heap allocation)
-- Garbage collection support
+- Heap allocation and memory management
+- Garbage collection (when enabled)
 - Built-in class implementations (String, IO, etc.)
 - Runtime error handling (dispatch on void, case abort, etc.)
 
 ## License
 
-**My code** (assignments in `assignments/PA*/`) is released under the [MIT License](LICENSE).
+**My code** is released under the [MIT License](LICENSE).
 
-**Course materials** (skeleton code, headers, runtime) are Copyright © 1995-1996 The Regents of the University of California (see `include/*/copyright.h`).
+**Course materials** (skeleton code, headers) are Copyright © 1995-1996 The Regents of the University of California (see `include/copyright.h`).
 
-**SPIM simulator** code in `lib/trap.handler` is Copyright © James R. Larus - personal/educational use only.
-
+**SPIM simulator** (`lib/trap.handler`) is Copyright © James R. Larus — personal/educational use only.
