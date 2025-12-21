@@ -1,14 +1,14 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
-#include "cool-io.h"
+#include "cool-io.hpp"
 #define MAXSIZE 1000000
 #define min(a, b) (a > b ? b : a)
 
-#include "stringtab.h"
+#include "stringtab.hpp"
 #include <stdio.h>
 
 //

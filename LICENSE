@@ -29,7 +29,7 @@ The following components have their own licenses:
 
 1. Course skeleton code and headers (include/*, src/*):
    Copyright (c) 1995,1996 The Regents of the University of California
-   See license in include/*/copyright.h
+   See license in include/*/copyright.hpp
 
 2. SPIM simulator runtime (in lib/trap.handler):
    Copyright (c) James R. Larus

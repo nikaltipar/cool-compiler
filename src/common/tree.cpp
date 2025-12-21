@@ -1,18 +1,18 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 ///////////////////////////////////////////////////////////////////////////
 //
-// file: tree.cc
+// file: tree.cpp
 //
 // This file defines the basic class of tree node
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include "tree.h"
+#include "tree.hpp"
 
 /* line number to assign to the current node being constructed */
 int node_lineno = 1;

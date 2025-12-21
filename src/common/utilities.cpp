@@ -1,12 +1,12 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 //
-//  utilities.c
+//  utilities.cpp
 //
 //  General support code for lexer and parser.
 //
@@ -19,10 +19,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "cool-io.h"    // for cerr, <<, manipulators
-#include "cool-parse.h" // defines tokens
-#include "stringtab.h"  // Symbol <-> String conversions
-#include "utilities.h"
+#include "cool-io.hpp"    // for cerr, <<, manipulators
+#include "cool-parse.hpp" // defines tokens
+#include "stringtab.hpp"  // Symbol <-> String conversions
+#include "utilities.hpp"
 #include <ctype.h> // for isprint
 
 // #define CHECK_TABLES

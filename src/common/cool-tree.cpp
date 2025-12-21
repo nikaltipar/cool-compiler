@@ -1,5 +1,5 @@
-#include "cool-tree.h"
-#include "tree.h"
+#include "cool-tree.hpp"
+#include "tree.hpp"
 
 Program program_class::copy_Program()
 {

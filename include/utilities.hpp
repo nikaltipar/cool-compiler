@@ -1,14 +1,14 @@
 // -*-Mode: C++;-*-
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 #ifndef _UTILITIES_H_
 #define _UTILITIES_H_
 
-#include "cool-io.h"
+#include "cool-io.hpp"
 
 extern char* cool_token_to_string(int tok);
 extern void print_cool_token(int tok);

@@ -1,23 +1,23 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
-#include "cool-tree.h"
-#include "cool.h"
-#include "tree.h"
-#include "utilities.h"
+#include "cool-tree.hpp"
+#include "cool.hpp"
+#include "tree.hpp"
+#include "utilities.hpp"
 
-// defined in stringtab.cc
+// defined in stringtab.cpp
 void dump_Symbol(ostream& stream, int padding, Symbol b);
 
-// defined in cool.h
+// defined in cool.hpp
 void dump_Boolean(ostream& stream, int padding, Boolean b);
 
 //////////////////////////////////////////////////////////////////
 //
-//  dumptype.cc
+//  dumptype.cpp
 //
 //  dumptype defines a simple recursive traversal of the abstract
 //  syntax tree (AST) that prints each node and any associated
@@ -89,7 +89,7 @@ void dump_Boolean(ostream& stream, int padding, Boolean b);
 //  called type.  The type member holds the type of the AST node.
 //
 //  Some AST nodes have lists of other tree nodes as components.  Lists in the
-//  AST are built using the class list_node defined in tree.h.  The list
+//  AST are built using the class list_node defined in tree.hpp.  The list
 //  classes in the Cool AST are:
 //
 //  Classes      a list of Class_
@@ -135,7 +135,7 @@ void dump_line(ostream& stream, int n, tree_node* t)
 //
 //  Note the use of the iterator to cycle through all of the
 //  classes.  The methods first, more, next, and nth on AST lists
-//  are defined in tree.h.
+//  are defined in tree.hpp.
 //
 void program_class::dump_with_types(ostream& stream, int n)
 {

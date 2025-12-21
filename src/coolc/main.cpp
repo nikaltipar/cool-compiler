@@ -5,12 +5,12 @@
 #include <iostream>
 #include <print>
 
-#include "cgen.h"
-#include "cool-parse.h"
-#include "cool-tree.h"
-#include "options.h"
-#include "semant.h"
-#include "utilities.h"
+#include "cgen.hpp"
+#include "cool-parse.hpp"
+#include "cool-tree.hpp"
+#include "options.hpp"
+#include "semant.hpp"
+#include "utilities.hpp"
 
 extern int curr_lineno;
 char* curr_filename = "<stdin>";
@@ -27,7 +27,7 @@ extern int yy_flex_debug;
 extern int cool_yydebug;
 int cgen_debug = 0;
 
-#include "cgen_gc.h"
+#include "cgen_gc.hpp"
 Memmgr cgen_Memmgr = GC_NOGC;
 Memmgr_Test cgen_Memmgr_Test = GC_NORMAL;
 Memmgr_Debug cgen_Memmgr_Debug = GC_QUICK;

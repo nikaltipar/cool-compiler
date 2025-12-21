@@ -1,9 +1,9 @@
 add_library(cool_common STATIC
-    utilities.cc
-    stringtab.cc
-    tree.cc
-    cool-tree.cc
-    dumptype.cc
+    utilities.cpp
+    stringtab.cpp
+    tree.cpp
+    cool-tree.cpp
+    dumptype.cpp
 )
 
 target_include_directories(cool_common PUBLIC

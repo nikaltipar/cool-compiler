@@ -1,10 +1,10 @@
 #ifndef SEMANT_H_
 #define SEMANT_H_
 
-#include "cool-tree.h"
-#include "list.h"
-#include "stringtab.h"
-#include "symtab.h"
+#include "cool-tree.hpp"
+#include "list.hpp"
+#include "stringtab.hpp"
+#include "symtab.hpp"
 #include <assert.h>
 #include <iostream>
 

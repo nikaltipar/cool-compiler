@@ -12,11 +12,9 @@
 
 <h1 align="center">COOL Compiler</h1>
 
-<p align="center">
-  A compiler for the <strong>COOL</strong> (Classroom Object-Oriented Language) programming language,<br>
-  originally developed as part of the Stanford CS143 Compilers course,<br>
-  now being restructured as a unified C++ project.
-</p>
+A compiler for the <strong>COOL</strong> (Classroom Object-Oriented Language) programming language,
+originally developed as part of the Stanford CS143 Compilers course,
+now being restructured as a unified C++ project.
 
 > **Note:** This repository is for educational experimentation with compilers. If you're taking CS143, please complete the assignments yourself — there's a lot to learn from doing it firsthand.
 
@@ -81,6 +79,6 @@ Generated code runs on SPIM with `trap.handler` providing:
 
 **My code** is released under the [MIT License](LICENSE).
 
-**Course materials** (skeleton code, headers) are Copyright © 1995-1996 The Regents of the University of California (see `include/copyright.h`).
+**Course materials** (skeleton code, headers) are Copyright © 1995-1996 The Regents of the University of California (see `include/copyright.hpp`).
 
 **SPIM simulator** (`lib/trap.handler`) is Copyright © James R. Larus — personal/educational use only.

@@ -1,5 +1,5 @@
 add_executable(coolc
-    main.cc
+    main.cpp
 )
 
 target_include_directories(coolc PRIVATE

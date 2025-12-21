@@ -22,8 +22,8 @@
 //
 //**************************************************************
 
-#include "cgen.h"
-#include "cgen_gc.h"
+#include "cgen.hpp"
+#include "cgen_gc.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -34,7 +34,7 @@ extern void emit_string_constant(ostream& str, char* s);
 extern int cgen_debug;
 
 //
-// Three symbols from the semantic analyzer (semant.cc) are used.
+// Three symbols from the semantic analyzer (semant.cpp) are used.
 // If e : No_type, then no code is generated for e.
 // Special code is generated for new SELF_TYPE.
 // The name "self" also generates code different from other references.
@@ -98,7 +98,7 @@ BoolConst truebool(TRUE);
 // Define method for code generation
 //
 // This is the method called by the compiler driver
-// `cgtest.cc'. cgen takes an `ostream' to which the assembly will be
+// `cgtest.cpp'. cgen takes an `ostream' to which the assembly will be
 // emmitted, and it passes this and the class list of the
 // code generator tree to the constructor for `CgenClassTable'.
 // That constructor performs all of the work of the code
@@ -123,10 +123,10 @@ void program_class::cgen(ostream& os)
 //
 //  emit_X  writes code for operation "X" to the output stream.
 //  There is an emit_X for each opcode X, as well as emit_ functions
-//  for generating names according to the naming conventions (see emit.h)
+//  for generating names according to the naming conventions (see emit.hpp)
 //  and calls to support functions defined in the trap handler.
 //
-//  Register names and addresses are passed as strings.  See `emit.h'
+//  Register names and addresses are passed as strings.  See `emit.hpp'
 //  for symbolic names you can use to refer to the strings.
 //
 //////////////////////////////////////////////////////////////////////////////

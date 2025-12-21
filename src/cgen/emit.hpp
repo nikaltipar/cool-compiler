@@ -12,7 +12,7 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#include "stringtab.h"
+#include "stringtab.hpp"
 
 #define MAXINT 100000000
 #define WORD_SIZE 4

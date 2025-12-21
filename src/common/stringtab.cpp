@@ -1,11 +1,11 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
-#include "stringtab.h"
-#include "stringtab_functions.h"
+#include "stringtab.hpp"
+#include "stringtab_functions.hpp"
 #include <assert.h>
 
 extern char* pad(int n);
