@@ -1,15 +1,15 @@
 #ifndef _COOL_PARSE_H
 #define _COOL_PARSE_H
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 #ifndef _COOL_H_
 #define _COOL_H_
 
-#include "cool-io.h"
+#include "cool-io.hpp"
 
 /* a type renaming */
 typedef int Boolean;
@@ -25,7 +25,7 @@ void assert_Symbol(Symbol);
 void dump_Symbol(ostream&, int, Symbol);
 
 #endif
-#include "tree.h"
+#include "tree.hpp"
 typedef class Program_class* Program;
 typedef class Class__class* Class_;
 typedef class Feature_class* Feature;

@@ -1,7 +1,7 @@
 bison_target(CoolParser
     cool.y
-    ${CMAKE_CURRENT_BINARY_DIR}/cool-parse.cc
-    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/cool-parse.h
+    ${CMAKE_CURRENT_BINARY_DIR}/cool-parse.cpp
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/cool-parse.hpp
     COMPILE_FLAGS "-d -v -y --debug -p cool_yy"
 )
 

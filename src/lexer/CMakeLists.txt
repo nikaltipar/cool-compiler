@@ -1,7 +1,7 @@
 flex_target(CoolLexer
     cool.flex
-    ${CMAKE_CURRENT_BINARY_DIR}/cool-lex.cc
-    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/cool-lex.h
+    ${CMAKE_CURRENT_BINARY_DIR}/cool-lex.cpp
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/cool-lex.hpp
 )
 
 # Lexer as a static library

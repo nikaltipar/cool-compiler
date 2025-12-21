@@ -1,15 +1,15 @@
 // -*-Mode: C++;-*-
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 #ifndef _STRINGTAB_H_
 #define _STRINGTAB_H_
 
-#include "cool-io.h"
-#include "list.h" // list template
+#include "cool-io.hpp"
+#include "list.hpp" // list template
 #include <assert.h>
 #include <string.h>
 

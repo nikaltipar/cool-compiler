@@ -14,9 +14,9 @@
  * to the code in the file.  Don't remove anything that was here initially
  */
 %{
-#include "cool-parse.h"
-#include "stringtab.h"
-#include "utilities.h"
+#include "cool-parse.hpp"
+#include "stringtab.hpp"
+#include "utilities.hpp"
 
 /* The compiler assumes these identifiers. */
 #define yylval cool_yylval

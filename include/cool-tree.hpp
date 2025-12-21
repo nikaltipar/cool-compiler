@@ -2,16 +2,16 @@
 #define COOL_TREE_H
 //////////////////////////////////////////////////////////
 //
-// file: cool-tree.h
+// file: cool-tree.hpp
 //
 // This file defines classes for each phylum and constructor
 //
 //////////////////////////////////////////////////////////
 
-#include "cool.h"
-#include "stringtab.h"
-#include "symtab.h"
-#include "tree.h"
+#include "cool.hpp"
+#include "stringtab.hpp"
+#include "symtab.hpp"
+#include "tree.hpp"
 #include <iostream>
 
 // Forward declarations for semantic analysis

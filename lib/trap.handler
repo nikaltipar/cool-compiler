@@ -272,7 +272,7 @@ ret:	lw $v0 s1
 #  The code above this line is from spim.  Below this line are
 #  the MIPS assembly routines implementing the Cool runtime system.
 #  This code is Copyright (c) 1995,1996 The Regents of the University 
-#  of California. All rights reserved.  See copyright.h for 
+#  of California. All rights reserved.  See copyright.hpp for
 #  limitation of liability and disclaimer of warranty provisions.
 #
 

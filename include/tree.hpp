@@ -1,21 +1,21 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 #ifndef TREE_H
 #define TREE_H
 ///////////////////////////////////////////////////////////////////////////
 //
-// file: tree.h
+// file: tree.hpp
 //
 // This file defines the basic class of tree node and list
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include "cool-io.h"
-#include "stringtab.h"
+#include "cool-io.hpp"
+#include "stringtab.hpp"
 
 /////////////////////////////////////////////////////////////////////
 //

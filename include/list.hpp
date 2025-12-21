@@ -1,13 +1,13 @@
 /* -*-Mode: C++;-*- */
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 //////////////////////////////////////////////////////////////////////
 //
-//  list.h
+//  list.hpp
 //
 //  This file implements a list template.
 //  Adapted from similar templates written by Kathy Yelick and
@@ -18,7 +18,7 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-#include "cool-io.h" //includes iostream
+#include "cool-io.hpp" //includes iostream
 #include <stdlib.h>
 
 template <class T> class List

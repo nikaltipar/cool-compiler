@@ -1,6 +1,6 @@
-#include "cool-tree.h"
-#include "emit.h"
-#include "symtab.h"
+#include "cool-tree.hpp"
+#include "emit.hpp"
+#include "symtab.hpp"
 #include <assert.h>
 #include <stdio.h>
 
@@ -37,7 +37,7 @@ class CgenClassTable
 
     const std::set<Symbol> predefined_method_classes {};
 
-    // In cgen.cc, many of helper emit functions use an int to refer to labels.
+    // In cgen.cpp, many of helper emit functions use an int to refer to labels.
     // We will use this to track already used integers for labels and increment
     // when a new label is needed.
     inline static int next_label {};

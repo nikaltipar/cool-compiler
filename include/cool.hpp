@@ -1,13 +1,13 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 #ifndef _COOL_H_
 #define _COOL_H_
 
-#include "cool-io.h"
+#include "cool-io.hpp"
 
 /* a type renaming */
 typedef int Boolean;

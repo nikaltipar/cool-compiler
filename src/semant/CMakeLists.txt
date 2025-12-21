@@ -1,7 +1,7 @@
 # Cool Semantic Analyzer library
 
 add_library(cool_semant STATIC
-    semant.cc
+    semant.cpp
 )
 
 target_include_directories(cool_semant PUBLIC

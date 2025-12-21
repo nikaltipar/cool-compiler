@@ -5,9 +5,9 @@
 */
 %{
   #include <iostream>
-  #include "cool-tree.h"
-  #include "stringtab.h"
-  #include "utilities.h"
+  #include "cool-tree.hpp"
+  #include "stringtab.hpp"
+  #include "utilities.hpp"
   
   extern char *curr_filename;
   

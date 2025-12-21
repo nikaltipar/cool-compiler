@@ -1,8 +1,8 @@
 //
-// See copyright.h for copyright notice and limitation of liability
+// See copyright.hpp for copyright notice and limitation of liability
 // and disclaimer of warranty provisions.
 //
-#include "copyright.h"
+#include "copyright.hpp"
 
 // The symbol table package.
 //
@@ -14,7 +14,7 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
 
-#include "list.h"
+#include "list.hpp"
 
 //
 // SymtabEnty<SYM,DAT> defines the entry for a symbol table that associates

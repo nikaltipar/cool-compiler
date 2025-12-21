@@ -1,7 +1,7 @@
 
 
-#include "semant.h"
-#include "utilities.h"
+#include "semant.hpp"
+#include "utilities.hpp"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -767,7 +767,7 @@ ostream& ClassTable::semant_error() const
      1) Check that the program is semantically correct
      2) Decorate the abstract syntax tree with type information
         by setting the `type' field in each Expression node.
-        (see `tree.h')
+        (see `tree.hpp')
 
      You are free to first do 1), make sure you catch all semantic
      errors. Part 2) can be done in a second stage, when you want

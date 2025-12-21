@@ -1,6 +1,6 @@
 add_library(cool_cgen STATIC
-    cgen.cc
-    cgen_supp.cc
+    cgen.cpp
+    cgen_supp.cpp
 )
 
 target_include_directories(cool_cgen PUBLIC
