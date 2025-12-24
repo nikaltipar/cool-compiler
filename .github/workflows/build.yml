@@ -29,17 +29,41 @@ jobs:
         run: .\vcpkg\bootstrap-vcpkg.bat
         if: runner.os == 'Windows'
 
-      - name: Install dependencies (Ubuntu)
+      - name: Set VCPKG_ROOT
+        run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
+        if: runner.os != 'Windows'
+
+      - name: Set VCPKG_ROOT (Windows)
+        run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
+        if: runner.os == 'Windows'
+
+      - name: Install Flex/Bison (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y flex bison
 
-      - name: Configure CMake
+      - name: Install Flex/Bison (Windows)
+        if: runner.os == 'Windows'
+        run: choco install winflexbison3 -y
+
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
         run: >
           cmake -B build
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_MANIFEST_MODE=ON
+          -DFLEX_EXECUTABLE=C:/ProgramData/chocolatey/bin/win_flex.exe
+          -DBISON_EXECUTABLE=C:/ProgramData/chocolatey/bin/win_bison.exe
+
+      - name: Configure CMake (Linux)
+        if: runner.os != 'Windows'
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_MANIFEST_MODE=ON
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }}
