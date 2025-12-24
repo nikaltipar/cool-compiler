@@ -37,11 +37,13 @@ jobs:
         run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
         if: runner.os == 'Windows'
 
-      - name: Install Flex/Bison (Ubuntu)
+      - name: Install dependencies (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y flex bison
+          sudo apt-get install -y flex bison g++-14
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
 
       - name: Install Flex/Bison (Windows)
         if: runner.os == 'Windows'
@@ -64,6 +66,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
           -DVCPKG_MANIFEST_MODE=ON
+          -DCMAKE_CXX_COMPILER=g++-14
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }}
