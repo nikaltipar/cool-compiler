@@ -40,6 +40,12 @@ add_subdirectory(src/semant)
 add_subdirectory(src/cgen)
 add_subdirectory(src/coolc)
 
+option(BUILD_TESTING "Build tests" ON)
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 install(TARGETS coolc
     RUNTIME DESTINATION bin
 )
