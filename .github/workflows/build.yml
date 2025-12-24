@@ -21,13 +21,25 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Bootstrap vcpkg
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flex bison g++-14 cmake ninja-build
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: choco install winflexbison3 cmake ninja -y
+
+      - name: Bootstrap vcpkg (Linux)
+        if: runner.os == 'Linux'
         run: ./vcpkg/bootstrap-vcpkg.sh
-        if: runner.os != 'Windows'
 
       - name: Bootstrap vcpkg (Windows)
-        run: .\vcpkg\bootstrap-vcpkg.bat
         if: runner.os == 'Windows'
+        run: .\vcpkg\bootstrap-vcpkg.bat
 
       - name: Set VCPKG_ROOT
         run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
@@ -36,18 +48,6 @@ jobs:
       - name: Set VCPKG_ROOT (Windows)
         run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $env:GITHUB_ENV
         if: runner.os == 'Windows'
-
-      - name: Install dependencies (Ubuntu)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flex bison g++-14
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-
-      - name: Install Flex/Bison (Windows)
-        if: runner.os == 'Windows'
-        run: choco install winflexbison3 -y
 
       - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
