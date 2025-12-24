@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "cool-compiler",
+  "version": "1.0.0",
+  "description": "The Cool Programming Language Compiler",
+  "dependencies": [
+    "cli11",
+    "gtest"
+  ]
+}

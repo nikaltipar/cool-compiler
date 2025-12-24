@@ -25,6 +25,6 @@ struct CoolOptions
         return instance;
     }
 
-private:
+  private:
     CoolOptions() = default;
 };

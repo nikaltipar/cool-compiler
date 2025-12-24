@@ -1,0 +1,16 @@
+* text=auto
+
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.h text eol=lf
+*.flex text eol=lf
+*.y text eol=lf
+*.cool text eol=lf
+*.cl text eol=lf
+*.out text eol=lf
+
+*.sh text eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+

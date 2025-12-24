@@ -44,8 +44,11 @@ extern YYSTYPE cool_yylval;
  *  Add Your own definitions here
  */
 constexpr size_t MAX_STR_LEN {1024};
-int comment_level = 0;
+int comment_level {};
 std::string cc_text {};
+bool string_error_reported {};
+
+void cool_yylex_reset();
 
 %}
 
@@ -108,10 +111,16 @@ INTEGER         {DIGIT}+
     curr_lineno++;
     if (YY_START == STRING)
     {
-        // If we reached this path, there was no \ before newline.
         BEGIN(INITIAL);
-        cool_yylval.error_msg = "Unterminated string constant";
-        return ERROR;
+        if (string_error_reported)
+        {
+            string_error_reported = false;
+        }
+        else
+        {
+            cool_yylval.error_msg = "Unterminated string constant";
+            return ERROR;
+        }
     }
 }
         
@@ -138,7 +147,7 @@ INTEGER         {DIGIT}+
 
 <NESTED_COMMENT><<EOF>> {
     BEGIN(INITIAL);
-    cool_yylval.error_msg = "Unterminated comment";
+    cool_yylval.error_msg = "EOF in comment";
     return ERROR;
 }
 
@@ -250,7 +259,6 @@ INTEGER         {DIGIT}+
     return OBJECTID;
 }
 
-
 {INTEGER} {
     cool_yylval.symbol = inttable.add_string(yytext);
     return INT_CONST;
@@ -258,50 +266,68 @@ INTEGER         {DIGIT}+
 
 {QUOTE} {
     cc_text = std::string {};
+    string_error_reported = false;
     BEGIN(STRING);
 }
 
 <STRING><<EOF>> {
-    cool_yylval.error_msg = "Unexpected EOF in string constant";
     BEGIN(INITIAL);
-    return ERROR;
+    if (!string_error_reported)
+    {
+        cool_yylval.error_msg = "EOF in string constant";
+        return ERROR;
+    }
+    string_error_reported = false;
 }
 
 <STRING>\\(.|\n) {
-    //printf("HA %s HA", yytext);
     switch (yytext[1])
     {
+        case '\n':
+            curr_lineno++;
+            cc_text += '\n';
+            break;
+        case '\0':
+            string_error_reported = true;
+            cool_yylval.error_msg = "String contains escaped null character.";
+            return ERROR;
         case 'b':
-            yytext[1] = '\b';
+            cc_text += '\b';
             break;
         case 'n':
-            yytext[1] = '\n';
+            cc_text += '\n';
             break;
         case 't':
-            yytext[1] = '\t';
+            cc_text += '\t';
             break;
         case 'f':
-            yytext[1] = '\f';
+            cc_text += '\f';
+            break;
+        default:
+            cc_text += yytext[1];
             break;
     }
-    
-    cc_text += std::string(yytext + 1, yyleng - 1);
 }
 
-<STRING>[^\"\n\\]+ {
+<STRING>\0 {
+    string_error_reported = true;
+    cool_yylval.error_msg = "String contains null character.";
+    return ERROR;
+}
+
+<STRING>[^\"\n\\\0]+ {
     cc_text += std::string(yytext, yyleng);
 }
 
 <STRING>{QUOTE} {
     BEGIN(INITIAL);
-    if (cc_text.size() > MAX_STR_LEN)
+    if (string_error_reported)
+    {
+        string_error_reported = false;
+    }
+    else if (cc_text.size() > MAX_STR_LEN)
     {
         cool_yylval.error_msg = "String constant too long";
-        return ERROR;
-    }
-    else if (cc_text.find('\0') != std::string::npos)
-    {
-        cool_yylval.error_msg = "String contains null character";
         return ERROR;
     }
     else
@@ -323,4 +349,11 @@ INTEGER         {DIGIT}+
 }
 
 %%
+
+void cool_yylex_reset() {
+    comment_level = 0;
+    cc_text.clear();
+    string_error_reported = false;
+    BEGIN(INITIAL);
+}
 
