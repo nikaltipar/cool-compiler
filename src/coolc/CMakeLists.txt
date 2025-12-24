@@ -9,10 +9,25 @@ target_include_directories(coolc PRIVATE
 )
 
 target_link_libraries(coolc PRIVATE
-    cool_common
     cool_lexer
     cool_parser
-    cool_semant
-    cool_cgen
     CLI11::CLI11
 )
+
+# Handle circular dependencies between common/semant/cgen on Linux
+# TODO better way to handle this.
+if(UNIX)
+    target_link_libraries(coolc PRIVATE
+        -Wl,--start-group
+        cool_common
+        cool_semant
+        cool_cgen
+        -Wl,--end-group
+    )
+else()
+    target_link_libraries(coolc PRIVATE
+        cool_common
+        cool_semant
+        cool_cgen
+    )
+endif()
