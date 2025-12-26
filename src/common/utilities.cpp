@@ -223,41 +223,41 @@ char* cool_token_to_string(int tok)
     }
 }
 
-void print_cool_token(int tok)
+void print_cool_token(std::ostream& out, int tok)
 {
 
-    cerr << cool_token_to_string(tok);
+    out << cool_token_to_string(tok);
 
     switch (tok)
     {
     case (STR_CONST):
-        cerr << " = ";
-        cerr << " \"";
-        print_escaped_string(cerr, cool_yylval.symbol->get_string());
-        cerr << "\"";
+        out << " = ";
+        out << " \"";
+        print_escaped_string(out, cool_yylval.symbol->get_string());
+        out << "\"";
 #ifdef CHECK_TABLES
         stringtable.lookup_string(cool_yylval.symbol->get_string());
 #endif
         break;
     case (INT_CONST):
-        cerr << " = " << cool_yylval.symbol;
+        out << " = " << cool_yylval.symbol;
 #ifdef CHECK_TABLES
         inttable.lookup_string(cool_yylval.symbol->get_string());
 #endif
         break;
     case (BOOL_CONST):
-        cerr << (cool_yylval.boolean ? " = true" : " = false");
+        out << (cool_yylval.boolean ? " = true" : " = false");
         break;
     case (TYPEID):
     case (OBJECTID):
-        cerr << " = " << cool_yylval.symbol;
+        out << " = " << cool_yylval.symbol;
 #ifdef CHECK_TABLES
         idtable.lookup_string(cool_yylval.symbol->get_string());
 #endif
         break;
     case (ERROR):
-        cerr << " = ";
-        print_escaped_string(cerr, cool_yylval.error_msg);
+        out << " = ";
+        print_escaped_string(out, cool_yylval.error_msg);
         break;
     }
 }
