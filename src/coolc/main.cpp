@@ -27,6 +27,9 @@ extern int yy_flex_debug;
 extern int cool_yydebug;
 int cgen_debug = 0;
 
+// Forward declare yyrestart to initialize lexer
+extern void yyrestart(FILE* input_file);
+
 #include "cgen_gc.hpp"
 Memmgr cgen_Memmgr = GC_NOGC;
 Memmgr_Test cgen_Memmgr_Test = GC_NORMAL;
@@ -82,6 +85,10 @@ int main(int argc, char** argv)
     else
         opts.stop_after = Phase::Cgen;
 
+    // Initialize debug flags to off (flex debug defaults to on with %option debug)
+    yy_flex_debug = 0;
+    cool_yydebug = 0;
+    
     if (debug)
     {
         yy_flex_debug = 1;

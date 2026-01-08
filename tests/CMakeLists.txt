@@ -25,5 +25,35 @@ target_compile_definitions(lexer_test
 
 # TODO add tests for other phases below.
 
+add_executable(parser_test
+    parser_test.cpp
+)
+
+target_link_libraries(parser_test
+    PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        -Wl,--start-group
+        cool_lexer
+        cool_parser
+        cool_common
+        cool_semant
+        cool_cgen
+        -Wl,--end-group
+)
+
+target_include_directories(parser_test
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_BINARY_DIR}/src/lexer
+        ${CMAKE_BINARY_DIR}/src/parser
+)
+
+target_compile_definitions(parser_test
+    PRIVATE
+        TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/parser_files"
+)
+
 include(GoogleTest)
 gtest_discover_tests(lexer_test)
+gtest_discover_tests(parser_test)

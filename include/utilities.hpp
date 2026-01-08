@@ -11,7 +11,7 @@
 #include "cool-io.hpp"
 
 extern char* cool_token_to_string(int tok);
-extern void print_cool_token(int tok);
+extern void print_cool_token(std::ostream& out, int tok);
 extern void fatal_error(char*);
 extern void print_escaped_string(ostream& str, const char* s);
 extern char* pad(int);

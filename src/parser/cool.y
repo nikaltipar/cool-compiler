@@ -83,6 +83,7 @@
     Program ast_root;	      /* the result of the parse  */
     Classes parse_results;        /* for use in semantic analysis */
     int omerrs = 0;               /* number of errors in lexing and parsing */
+    std::ostream* error_stream = &cerr;
     %}
     
     /* A union of all the types that can be the result of parsing actions. */
@@ -309,10 +310,10 @@
     {
       extern int curr_lineno;
       
-      cerr << "\"" << curr_filename << "\", line " << curr_lineno << ": " \
+      (*error_stream) << "\"" << curr_filename << "\", line " << curr_lineno << ": " \
       << s << " at or near ";
-      print_cool_token(yychar);
-      cerr << endl;
+      print_cool_token(*error_stream, yychar);
+      (*error_stream) << endl;
       omerrs++;
       
       if(omerrs>50) {fprintf(stdout, "More than 50 errors\n"); exit(1);}

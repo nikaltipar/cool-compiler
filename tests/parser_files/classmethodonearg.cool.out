@@ -1,0 +1,21 @@
+#1
+_program
+  #1
+  _class
+    Hello
+    Object
+    "classmethodonearg.cool"
+    (
+    #3
+    _method
+      cow
+      #3
+      _formal
+        a
+        Int
+      SELF_TYPE
+      #4
+      _object
+        self
+      : _no_type
+    )

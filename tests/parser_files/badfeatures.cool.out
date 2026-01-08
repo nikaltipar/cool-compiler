@@ -1,0 +1,3 @@
+"badfeatures.cool", line 2: syntax error at or near OBJECTID = int
+"badfeatures.cool", line 4: syntax error at or near ';'
+"badfeatures.cool", line 6: syntax error at or near OBJECTID = y
