@@ -1,0 +1,2 @@
+inheritsbool.cool:8: B cannot inherit from Bool.
+Compilation halted due to static semantic errors.

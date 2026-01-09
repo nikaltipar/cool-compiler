@@ -1,0 +1,67 @@
+#1
+_program
+  #1
+  _class
+    Main
+    Object
+    "compare.cool"
+    (
+    #1
+    _method
+      main
+      Int
+      #1
+      _int
+        0
+      : Int
+    )
+  #3
+  _class
+    A
+    Object
+    "compare.cool"
+    (
+    )
+  #4
+  _class
+    B
+    Object
+    "compare.cool"
+    (
+    )
+  #5
+  _class
+    C
+    Object
+    "compare.cool"
+    (
+    #6
+    _attr
+      a
+      A
+      #6
+      _no_expr
+      : _no_type
+    #7
+    _attr
+      b
+      B
+      #7
+      _no_expr
+      : _no_type
+    #9
+    _method
+      compare
+      Bool
+      #10
+      _eq
+        #10
+        _object
+          a
+        : A
+        #10
+        _object
+          b
+        : B
+      : Bool
+    )

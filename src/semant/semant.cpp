@@ -66,9 +66,9 @@ static void initialize_constants(void)
 //
 //////////////////////////////////////////////////////////////////////
 
-ClassTable::ClassTable(Classes classes)
+ClassTable::ClassTable(Classes classes, std::ostream& error_stream)
     : semant_errors(0)
-    , error_stream(cerr)
+    , error_stream(error_stream)
 {
     install_basic_classes();
     auto i = classes->first();
@@ -83,7 +83,7 @@ void ClassTable::add_class(Class_ c)
 {
     if (class_name_to_class_map.find(c->get_name()) != class_name_to_class_map.end())
     {
-        semant_error(c) << "Class " << c->get_name() << " already defined." << endl;
+        semant_error(c) << "Class " << c->get_name() << " already defined." << std::endl;
         return;
     }
     class_name_to_class_map[c->get_name()] = c;
@@ -106,7 +106,7 @@ void ClassTable::validate_basic_structure()
     // Main should exist.
     if (class_name_to_class_map.find(Main) == class_name_to_class_map.end())
     {
-        semant_error() << "Class Main is not defined." << endl;
+        semant_error() << "Class Main is not defined." << std::endl;
     }
 
     // Reserved class names should not exist.
@@ -116,7 +116,7 @@ void ClassTable::validate_basic_structure()
         auto reserved_class_it = class_name_to_class_map.find(c);
         if (reserved_class_it != class_name_to_class_map.end())
         {
-            semant_error((*reserved_class_it).second) << c << " class name is reserved." << endl;
+            semant_error((*reserved_class_it).second) << c << " class name is reserved." << std::endl;
         }
     }
 
@@ -133,7 +133,7 @@ void ClassTable::validate_basic_structure()
                 for (auto child : class_children)
                 {
                     semant_error(class_name_to_class_map[child])
-                        << child << " cannot inherit from " << c << "." << endl;
+                        << child << " cannot inherit from " << c << "." << std::endl;
                 }
             }
         }
@@ -147,7 +147,7 @@ void ClassTable::validate_basic_structure()
         auto parent_class_symbol = c.second;
         if (class_symbol == parent_class_symbol)
         {
-            semant_error(class_name_to_class_map[class_symbol]) << " class cannot inherit from itself." << endl;
+            semant_error(class_name_to_class_map[class_symbol]) << " class cannot inherit from itself." << std::endl;
         }
     }
 
@@ -158,7 +158,7 @@ void ClassTable::validate_basic_structure()
         auto parent_class_symbol = c.second;
         if (class_name_to_class_map.find(parent_class_symbol) == class_name_to_class_map.end())
         {
-            semant_error(class_name_to_class_map[class_symbol]) << " class does not exist." << endl;
+            semant_error(class_name_to_class_map[class_symbol]) << "Symbol " << parent_class_symbol << " not found in class table." << std::endl;
         }
     }
 
@@ -193,7 +193,7 @@ void ClassTable::check_cycles()
             if (visiting.find(parent_class_symbol) != visiting.end())
             {
                 semant_error(class_name_to_class_map[current_class_symbol])
-                    << "Cycle detected at: " << parent_class_symbol << "." << endl;
+                    << "Cycle detected at: " << parent_class_symbol << "." << std::endl;
                 break;
             }
             visiting.insert(parent_class_symbol);
@@ -346,7 +346,7 @@ void ClassTable::create_class_to_methods_map()
                     class_to_method_names_map[class_symbol].end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Method " << method_ptr->get_name() << " is already defined." << endl;
+                        << "Method " << method_ptr->get_name() << " is already defined." << std::endl;
                 }
 
                 class_to_method_names_map[class_symbol].insert(method_ptr->get_name());
@@ -372,7 +372,7 @@ void ClassTable::create_class_to_methods_map()
             if (return_type != SELF_TYPE && class_name_to_class_map.find(return_type) == class_name_to_class_map.end())
             {
                 semant_error(class_name_to_class_map[class_symbol])
-                    << "Return type " << return_type << " does not exist in class table." << endl;
+                    << "Return type " << return_type << " does not exist in class table." << std::endl;
             }
 
             auto formals = method_obj.get_formals();
@@ -388,20 +388,20 @@ void ClassTable::create_class_to_methods_map()
                 if (class_name_to_class_map.find(formal_name) != class_name_to_class_map.end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Formal name " << formal_name << " is already defined in class table." << endl;
+                        << "Formal name " << formal_name << " is already defined in class table." << std::endl;
                 }
 
                 // Formal name must not be self.
                 if (formal_name == self)
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Self is not allowed as an argument name." << endl;
+                        << "self is not allowed as an argument name." << std::endl;
                 }
                 // Formal name must not be duplicate.
                 else if (formal_names.find(formal_name) != formal_names.end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Duplicate formal name: " << formal_name << endl;
+                        << "Duplicate formal name: " << formal_name << std::endl;
                 }
                 formal_names.insert(formal_name);
 
@@ -410,7 +410,7 @@ void ClassTable::create_class_to_methods_map()
                 if (class_name_to_class_map.find(formal_type) == class_name_to_class_map.end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Formal type " << formal_type << " does not exist in class table." << endl;
+                        << "Formal type " << formal_type << " does not exist in class table." << std::endl;
                 }
                 j = formals->next(j);
             }
@@ -444,7 +444,7 @@ void ClassTable::create_class_to_methods_map()
                     ))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Method " << method_name << " overrides with a different signature." << endl;
+                        << "Method " << method_name << " overrides with a different signature." << std::endl;
                 }
             }
             parent_class_symbol = class_to_parent_map[parent_class_symbol];
@@ -483,21 +483,21 @@ void ClassTable::verify_attributes()
                 if (attr_name == self)
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Self is not allowed as an attribute name." << endl;
+                        << "self is not allowed as an attribute name." << std::endl;
                 }
                 // Need to verify no 2 attributes have the same name.
                 if (class_to_attr_names_map[class_symbol].find(attr_name) !=
                     class_to_attr_names_map[class_symbol].end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Attribute " << attr_name << " is already defined." << endl;
+                        << "Attribute " << attr_name << " is already defined." << std::endl;
                 }
                 class_to_attr_names_map[class_symbol].insert(attr_name);
 
                 if (attr_type != prim_slot && class_name_to_class_map.find(attr_type) == class_name_to_class_map.end())
                 {
                     semant_error(class_name_to_class_map[class_symbol])
-                        << "Attribute type " << attr_type << " does not exist in class table." << endl;
+                        << "Attribute type " << attr_type << " does not exist in class table." << std::endl;
                 }
             }
             i = features->next(i);
@@ -611,7 +611,7 @@ void ClassTable::populate_expressions_types() const
         }
         catch (const std::exception& e)
         {
-            std::cerr << e.what() << std::endl;
+            error_stream << e.what() << std::endl;
         }
     }
 }
@@ -774,32 +774,32 @@ ostream& ClassTable::semant_error() const
      to build mycoolc.
  */
 
-void program_class::semant()
+void program_class::semant(std::ostream& error_stream)
 {
     initialize_constants();
     /* ClassTable constructor may do some semantic analysis */
-    ClassTable* classtable = new ClassTable(classes);
+    ClassTable* classtable = new ClassTable(classes, error_stream);
     classtable->validate_basic_structure();
     if (classtable->errors())
     {
-        cerr << "Compilation halted due to static semantic errors." << endl;
-        exit(1);
+        error_stream << "Compilation halted due to static semantic errors." << std::endl;
+        return;
     }
 
     classtable->create_class_to_methods_map();
     classtable->verify_attributes();
     if (classtable->errors())
     {
-        cerr << "Compilation halted due to static semantic errors." << endl;
-        exit(1);
+        error_stream << "Compilation halted due to static semantic errors." << std::endl;
+        return;
     }
 
     classtable->populate_expressions_types();
 
     if (classtable->errors())
     {
-        cerr << "Compilation halted due to static semantic errors." << endl;
-        exit(1);
+        error_stream << "Compilation halted due to static semantic errors." << std::endl;
+        return;
     }
 }
 
@@ -832,7 +832,7 @@ void method_class::typecheck(
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Method " << name << " returns type " << actual_return_type
-            << " which does not conform to the return type " << return_type << "." << endl;
+            << " which does not conform to the return type " << return_type << "." << std::endl;
     }
 }
 
@@ -849,19 +849,19 @@ Symbol assign_class::typecheck(
 
     if (name == self)
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Cannot assign to self." << endl;
+        classtable.semant_error(classtable.get_class(current_class)) << "Cannot assign to self." << std::endl;
     }
     else if (!ltype_ptr)
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Symbol " << name << " not found in class table." << endl;
+            << "Symbol " << name << " not found in class table." << std::endl;
         ltype = rtype;
     }
     else if (!classtable.conforms(rtype, *ltype_ptr, current_class))
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Method " << name << " returns type " << rtype << " which is not a subclass of " << *ltype_ptr << "."
-            << endl;
+            << std::endl;
         ltype = rtype;
     }
     else
@@ -882,22 +882,22 @@ Symbol static_dispatch_class::typecheck(
 
     if (type_name == SELF_TYPE)
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Cannot use SELF_TYPE as a type name." << endl;
+        classtable.semant_error(classtable.get_class(current_class)) << "Cannot use SELF_TYPE as a type name." << std::endl;
     }
     else if (!classtable.is_valid_class(type_name))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Symbol " << type_name << " not found in class table." << endl;
+            << "Symbol " << type_name << " not found in class table." << std::endl;
     }
     else if (!classtable.conforms(expr_type, type_name, current_class))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Expression type " << expr_type << " is not a subclass of " << type_name << "." << endl;
+            << "Expression type " << expr_type << " does not conform to the type " << type_name << "." << std::endl;
     }
     else if (!classtable.has_method(type_name, name))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Method " << name << " not found in class table." << endl;
+            << "Method " << name << " not found in class table." << std::endl;
     }
     else
     {
@@ -909,7 +909,7 @@ Symbol static_dispatch_class::typecheck(
         {
             classtable.semant_error(classtable.get_class(current_class))
                 << "Method " << name << " has " << actual->len() << " arguments, but " << formals->len()
-                << " are expected." << endl;
+                << " are expected." << std::endl;
         }
 
         auto i = actual->first();
@@ -924,7 +924,7 @@ Symbol static_dispatch_class::typecheck(
                 {
                     classtable.semant_error(classtable.get_class(current_class))
                         << "Argument " << i << " has type " << actual_type << " which is not a subclass of "
-                        << formals->nth(i)->get_type_decl() << "." << endl;
+                        << formals->nth(i)->get_type_decl() << "." << std::endl;
                 }
             }
 
@@ -962,7 +962,7 @@ Symbol dispatch_class::typecheck(
     if (!classtable.has_method(sanitized_expr_type, name))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Method " << name << " not found in class table." << endl;
+            << "Method " << name << " not found in class table." << std::endl;
     }
     else
     {
@@ -974,7 +974,7 @@ Symbol dispatch_class::typecheck(
         {
             classtable.semant_error(classtable.get_class(current_class))
                 << "Method " << name << " has " << actual->len() << " arguments, but " << formals->len()
-                << " are expected." << endl;
+                << " are expected." << std::endl;
         }
 
         auto i = actual->first();
@@ -988,9 +988,10 @@ Symbol dispatch_class::typecheck(
                 if (!classtable.conforms(current_actual_type, formals->nth(i)->get_type_decl(), current_class))
                 {
                     classtable.semant_error(classtable.get_class(current_class))
-                        << " Attribute " << i << " in method " << name
-                        << " does not conform to the formal parameter type " << formals->nth(i)->get_type_decl() << "."
-                        << endl;
+                        << "In call of method " << name << ", type " << current_actual_type
+                        << " of parameter " << formals->nth(i)->get_name()
+                        << " does not conform to declared type " << formals->nth(i)->get_type_decl() << "."
+                        << std::endl;
                 }
             }
 
@@ -1028,7 +1029,7 @@ Symbol cond_class::typecheck(
     if (pred_type != Bool)
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Cond operation requires a Bool predicate. but got " << pred_type << "." << endl;
+            << "Cond operation requires a Bool predicate. but got " << pred_type << "." << std::endl;
     }
     else
     {
@@ -1050,7 +1051,7 @@ Symbol loop_class::typecheck(
     if (pred_type != Symbol(Bool))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Loop operation requires a Bool predicate." << endl;
+            << "Loop operation requires a Bool predicate." << std::endl;
     }
 
     set_type(result_type);
@@ -1069,7 +1070,7 @@ Symbol typcase_class::typecheck(
         if (branch_types.find(cases->nth(i)->get_type_decl()) != branch_types.end())
         {
             classtable.semant_error(classtable.get_class(current_class))
-                << "Case " << cases->nth(i)->get_name() << " has the same type as another case." << endl;
+                << "Case " << cases->nth(i)->get_name() << " has the same type as another case." << std::endl;
             set_type(Object);
             return Object;
         }
@@ -1096,7 +1097,7 @@ Symbol typcase_class::typecheck(
     {
         classtable.semant_error(classtable.get_class(current_class))
             << std::format("Expression type {} is not a subclass of {}.", expr_type->get_string(), lub->get_string())
-            << endl;
+            << std::endl;
     }
     else
     {
@@ -1117,12 +1118,12 @@ Symbol branch_class::typecheck(
     if (!classtable.is_valid_class(type_decl))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Type " << type_decl << " not found in class table." << endl;
+            << "Type " << type_decl << " not found in class table." << std::endl;
     }
     else if (!classtable.conforms(expr_type, type_decl, current_class))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Expression type " << expr_type << " is not a subclass of " << type_decl << "." << endl;
+            << "Expression type " << expr_type << " is not a subclass of " << type_decl << "." << std::endl;
     }
     else
     {
@@ -1157,17 +1158,17 @@ Symbol let_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
     if (type_decl != SELF_TYPE && !classtable.is_valid_class(type_decl))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "In let expression, type " << type_decl << " not found in class table." << endl;
+            << "In let expression, type " << type_decl << " not found in class table." << std::endl;
     }
     else if (type_decl != SELF_TYPE && init_type != Symbol(No_type) &&
              !classtable.conforms(init_type, type_decl, current_class))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Initialization type " << init_type << " is not a subclass of " << type_decl << "." << endl;
+            << "Initialization type " << init_type << " is not a subclass of " << type_decl << "." << std::endl;
     }
     else if (identifier == self)
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Cannot override self." << endl;
+        classtable.semant_error(classtable.get_class(current_class)) << "Cannot override self." << std::endl;
     }
     else
     {
@@ -1193,7 +1194,7 @@ Symbol plus_class::typecheck(
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Plus operation requires two Int arguments." << endl;
+            << "Plus operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1210,7 +1211,7 @@ Symbol sub_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Sub operation requires two Int arguments." << endl;
+            << "Sub operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1227,7 +1228,7 @@ Symbol mul_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Mul operation requires two Int arguments." << endl;
+            << "Mul operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1246,7 +1247,7 @@ Symbol divide_class::typecheck(
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Divide operation requires two Int arguments." << endl;
+            << "Divide operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1263,7 +1264,7 @@ Symbol neg_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
     if (e1_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Neg operation requires an Int argument." << endl;
+            << "Neg operation requires an Int argument." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1280,7 +1281,7 @@ Symbol lt_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const ClassT
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Lt operation requires two Int arguments." << endl;
+            << "Lt operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1298,7 +1299,7 @@ Symbol eq_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const ClassT
 
     if (restricted_types.find(e1_type) != restricted_types.find(e2_type))
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Incompatible." << endl;
+        classtable.semant_error(classtable.get_class(current_class)) << "Incompatible equality comparison between basic types " << e1_type << " and " << e2_type << "." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1315,7 +1316,7 @@ Symbol leq_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
     if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Leq operation requires two Int arguments." << endl;
+            << "Leq operation requires two Int arguments." << std::endl;
         type = Symbol(Object);
     }
 
@@ -1368,7 +1369,7 @@ Symbol new__class::typecheck(
     if (type_name != SELF_TYPE && !classtable.is_valid_class(type_name))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Symbol " << type_name << " not found in class table." << endl;
+            << "Symbol " << type_name << " not found in class table." << std::endl;
         type = Object;
     }
 
@@ -1403,7 +1404,7 @@ Symbol object_class::typecheck(
     if (!object_type_ptr)
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Symbol " << name << " not found in class table." << endl;
+            << "Symbol " << name << " not found in class table." << std::endl;
     }
     else
     {

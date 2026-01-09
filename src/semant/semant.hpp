@@ -56,7 +56,7 @@ class ClassTable
     std::stack<Symbol> get_inheritance_stack(Symbol class_name) const;
 
   public:
-    ClassTable(Classes);
+    ClassTable(Classes, std::ostream& error_stream);
     int errors()
     {
         return semant_errors;

@@ -135,7 +135,7 @@ int main(int argc, char** argv)
             continue;
         }
 
-        ast_root->semant();
+        ast_root->semant(std::cerr);
 
         if (opts.stop_after == Phase::Semant)
         {
