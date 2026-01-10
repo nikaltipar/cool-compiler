@@ -1,0 +1,2 @@
+lubtest.cool:9: Method h returns type Z which does not conform to the return type B.
+Compilation halted due to static semantic errors.

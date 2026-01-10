@@ -1,0 +1,3 @@
+trickyatdispatch2.cool:9: Expression type A does not conform to the type B.
+trickyatdispatch2.cool:9: Method binky returns type Object which does not conform to the return type Int.
+Compilation halted due to static semantic errors.

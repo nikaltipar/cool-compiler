@@ -1,0 +1,2 @@
+badstaticdispatch.cool:10: Expression type SELF_TYPE does not conform to the type C.
+Compilation halted due to static semantic errors.

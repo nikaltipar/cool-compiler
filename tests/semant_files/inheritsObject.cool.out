@@ -1,0 +1,53 @@
+#1
+_program
+  #1
+  _class
+    A
+    Object
+    "inheritsObject.cool"
+    (
+    #3
+    _attr
+      foo
+      Int
+      #3
+      _no_expr
+      : _no_type
+    #5
+    _method
+      main
+      Int
+      #6
+      _int
+        6
+      : Int
+    )
+  #11
+  _class
+    B
+    Object
+    "inheritsObject.cool"
+    (
+    #13
+    _attr
+      bar
+      Int
+      #13
+      _no_expr
+      : _no_type
+    )
+  #17
+  _class
+    Main
+    Object
+    "inheritsObject.cool"
+    (
+    #17
+    _method
+      main
+      Int
+      #17
+      _int
+        6
+      : Int
+    )

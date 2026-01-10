@@ -1,0 +1,2 @@
+assignnoconform.cool:1: Method b returns type A which is not a subclass of B.
+Compilation halted due to static semantic errors.

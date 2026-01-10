@@ -78,7 +78,7 @@ class Program_class : public tree_node
     virtual Program copy_Program() = 0;
 
     // Program extras
-    virtual void semant() = 0;
+    virtual void semant(std::ostream& error_stream) = 0;
     virtual void cgen(ostream&) = 0;
     virtual void dump_with_types(ostream&, int) = 0;
 };
@@ -204,7 +204,7 @@ class program_class : public Program_class
     void dump(ostream& stream, int n);
 
     // program extras
-    void semant();
+    void semant(std::ostream& error_stream);
     void cgen(ostream&);
     void dump_with_types(ostream&, int);
 };

@@ -1,0 +1,2 @@
+badequalitytest.cool:3: Incompatible equality comparison between basic types Int and String.
+Compilation halted due to static semantic errors.

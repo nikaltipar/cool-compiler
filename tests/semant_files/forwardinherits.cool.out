@@ -1,0 +1,45 @@
+#1
+_program
+  #1
+  _class
+    A
+    B
+    "forwardinherits.cool"
+    (
+    #3
+    _attr
+      foo
+      Int
+      #3
+      _no_expr
+      : _no_type
+    )
+  #7
+  _class
+    B
+    Object
+    "forwardinherits.cool"
+    (
+    #9
+    _attr
+      bar
+      Int
+      #9
+      _no_expr
+      : _no_type
+    )
+  #12
+  _class
+    Main
+    Object
+    "forwardinherits.cool"
+    (
+    #12
+    _method
+      main
+      Int
+      #12
+      _int
+        6
+      : Int
+    )

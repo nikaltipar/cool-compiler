@@ -1,0 +1,3 @@
+letself.cool:2: Cannot override self.
+letself.cool:2: Method main returns type Object which does not conform to the return type Int.
+Compilation halted due to static semantic errors.
