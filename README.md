@@ -4,13 +4,13 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://github.com/nikaltipar/cool-compiler/actions/workflows/build.yml"><img src="https://github.com/nikaltipar/cool-compiler/actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/C%2B%2B-23-blue.svg?logo=c%2B%2B" alt="C++23">
   <img src="https://img.shields.io/badge/build-CMake-064F8C.svg?logo=cmake" alt="CMake">
+  <img src="https://img.shields.io/badge/tested%20with-GTest-4285F4.svg?logo=google" alt="GTest">
   <a href="https://github.com/nikaltipar/cool-compiler/stargazers"><img src="https://img.shields.io/github/stars/nikaltipar/cool-compiler?style=flat&logo=github" alt="GitHub Stars"></a>
   <a href="https://github.com/nikaltipar/cool-compiler/issues"><img src="https://img.shields.io/github/issues/nikaltipar/cool-compiler" alt="GitHub Issues"></a>
 </p>
-
-<h1 align="center">COOL Compiler</h1>
 
 A compiler for the <strong>COOL</strong> (Classroom Object-Oriented Language) programming language,
 originally developed as part of the Stanford CS143 Compilers course,
@@ -74,6 +74,21 @@ Generated code runs on SPIM with `trap.handler` providing:
 - Garbage collection (when enabled)
 - Built-in class implementations (String, IO, etc.)
 - Runtime error handling (dispatch on void, case abort, etc.)
+
+## Build Steps
+
+```bash
+# Clone the repository (with submodules for vcpkg).
+git clone --recursive https://github.com/nikaltipar/cool-compiler.git
+cd cool-compiler
+
+# Configure and build.
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_MANIFEST_MODE=ON
+cmake --build build
+
+# Run tests (optional).
+ctest --test-dir build
+```
 
 ## License
 
