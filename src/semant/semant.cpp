@@ -154,7 +154,8 @@ void ClassTable::validate_basic_structure()
     {
         if (class_name_to_class_map.find(parent_class_symbol) == class_name_to_class_map.end())
         {
-            semant_error(class_name_to_class_map[class_symbol]) << "Symbol " << parent_class_symbol << " not found in class table." << std::endl;
+            semant_error(class_name_to_class_map[class_symbol])
+                << "Symbol " << parent_class_symbol << " not found in class table." << std::endl;
         }
     }
 
@@ -341,9 +342,7 @@ void ClassTable::create_class_to_methods_map()
                 }
 
                 class_to_method_names_map[class_symbol].insert(method_ptr->get_name());
-                class_method_pair_to_method_obj_map.insert(
-                    {{class_symbol, method_ptr->get_name()}, *method_ptr}
-                );
+                class_method_pair_to_method_obj_map.insert({{class_symbol, method_ptr->get_name()}, *method_ptr});
             }
             i = features->next(i);
         }
@@ -424,8 +423,7 @@ void ClassTable::create_class_to_methods_map()
             for (auto method_name : common_method_names)
             {
                 auto method_obj = class_method_pair_to_method_obj_map.at({class_symbol, method_name});
-                if (!method_obj.can_override(
-                        class_method_pair_to_method_obj_map.at({parent_class_symbol, method_name})
+                if (!method_obj.can_override(class_method_pair_to_method_obj_map.at({parent_class_symbol, method_name})
                     ))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
@@ -859,7 +857,8 @@ Symbol static_dispatch_class::typecheck(
 
     if (type_name == SELF_TYPE)
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Cannot use SELF_TYPE as a type name." << std::endl;
+        classtable.semant_error(classtable.get_class(current_class))
+            << "Cannot use SELF_TYPE as a type name." << std::endl;
     }
     else if (!classtable.is_valid_class(type_name))
     {
@@ -965,10 +964,9 @@ Symbol dispatch_class::typecheck(
                 if (!classtable.conforms(current_actual_type, formals->nth(i)->get_type_decl(), current_class))
                 {
                     classtable.semant_error(classtable.get_class(current_class))
-                        << "In call of method " << name << ", type " << current_actual_type
-                        << " of parameter " << formals->nth(i)->get_name()
-                        << " does not conform to declared type " << formals->nth(i)->get_type_decl() << "."
-                        << std::endl;
+                        << "In call of method " << name << ", type " << current_actual_type << " of parameter "
+                        << formals->nth(i)->get_name() << " does not conform to declared type "
+                        << formals->nth(i)->get_type_decl() << "." << std::endl;
                 }
             }
 
@@ -1277,8 +1275,8 @@ Symbol eq_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const ClassT
     if (restricted_types.find(e1_type) != restricted_types.find(e2_type))
     {
         classtable.semant_error(classtable.get_class(current_class))
-            << "Incompatible equality comparison between basic types "
-            << e1_type << " and " << e2_type << "." << std::endl;
+            << "Incompatible equality comparison between basic types " << e1_type << " and " << e2_type << "."
+            << std::endl;
         type = Object;
     }
 
