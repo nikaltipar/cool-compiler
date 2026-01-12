@@ -81,7 +81,7 @@ ClassTable::ClassTable(Classes classes, std::ostream& error_stream)
 
 void ClassTable::add_class(Class_ c)
 {
-    if (class_name_to_class_map.find(c->get_name()) != class_name_to_class_map.end())
+    if (class_name_to_class_map.contains(c->get_name()))
     {
         semant_error(c) << "Class " << c->get_name() << " already defined." << std::endl;
         return;
@@ -122,7 +122,7 @@ void ClassTable::validate_basic_structure()
 
     // Main or basic classes cannot have children.
     std::vector<Symbol> no_children_classes {Main, Bool, Int, Str};
-    for (auto c : no_children_classes)
+    for (const auto& c : no_children_classes)
     {
         auto class_children_it = class_to_children_map.find(c);
         if (class_children_it != class_to_children_map.end())
@@ -141,10 +141,8 @@ void ClassTable::validate_basic_structure()
 
     // Cannot inherit itself.
     // This can be caught as a cycle, but do the check here for readability.
-    for (auto c : class_to_parent_map)
+    for (auto [class_symbol, parent_class_symbol] : class_to_parent_map)
     {
-        auto class_symbol = c.first;
-        auto parent_class_symbol = c.second;
         if (class_symbol == parent_class_symbol)
         {
             semant_error(class_name_to_class_map[class_symbol]) << " class cannot inherit from itself." << std::endl;
@@ -152,10 +150,8 @@ void ClassTable::validate_basic_structure()
     }
 
     // Parent should be a class.
-    for (auto c : class_to_parent_map)
+    for (auto [class_symbol, parent_class_symbol] : class_to_parent_map)
     {
-        auto class_symbol = c.first;
-        auto parent_class_symbol = c.second;
         if (class_name_to_class_map.find(parent_class_symbol) == class_name_to_class_map.end())
         {
             semant_error(class_name_to_class_map[class_symbol]) << "Symbol " << parent_class_symbol << " not found in class table." << std::endl;
@@ -174,11 +170,9 @@ void ClassTable::check_cycles()
     std::set<Symbol> visited {};
     std::set<Symbol> visiting {};
 
-    for (auto c : class_to_parent_map)
+    for (auto [current_class_symbol, parent_class_symbol] : class_to_parent_map)
     {
-        auto current_class_symbol = c.first;
-        auto parent_class_symbol = c.second;
-        if (visited.find(current_class_symbol) != visited.end())
+        if (visited.contains(current_class_symbol))
         {
             continue;
         }
@@ -186,11 +180,11 @@ void ClassTable::check_cycles()
 
         while (parent_class_symbol != No_class)
         {
-            if (visited.find(parent_class_symbol) != visited.end())
+            if (visited.contains(parent_class_symbol))
             {
                 break;
             }
-            if (visiting.find(parent_class_symbol) != visiting.end())
+            if (visiting.contains(parent_class_symbol))
             {
                 semant_error(class_name_to_class_map[current_class_symbol])
                     << "Cycle detected at: " << parent_class_symbol << "." << std::endl;
@@ -205,7 +199,7 @@ void ClassTable::check_cycles()
                 parent_class_symbol = (*parent_class_it).second;
             }
         }
-        for (auto s : visiting)
+        for (const auto& s : visiting)
         {
             visited.insert(s);
         }
@@ -327,11 +321,8 @@ void ClassTable::install_basic_classes()
 void ClassTable::create_class_to_methods_map()
 {
     // For each class, add all methods defined there.
-    for (auto c : class_name_to_class_map)
+    for (auto [class_symbol, class_] : class_name_to_class_map)
     {
-        auto class_symbol = c.first;
-        auto class_ = c.second;
-
         auto features = class_->get_features();
         auto i = features->first();
         class_to_method_names_map[class_symbol] = std::set<Symbol> {};
@@ -351,25 +342,22 @@ void ClassTable::create_class_to_methods_map()
 
                 class_to_method_names_map[class_symbol].insert(method_ptr->get_name());
                 class_method_pair_to_method_obj_map.insert(
-                    std::make_pair(std::make_pair(class_symbol, method_ptr->get_name()), *method_ptr)
+                    {{class_symbol, method_ptr->get_name()}, *method_ptr}
                 );
             }
             i = features->next(i);
         }
     }
 
-    for (auto c : class_to_method_names_map)
+    for (auto [class_symbol, class_method_names] : class_to_method_names_map)
     {
-        auto class_symbol = c.first;
-        auto class_method_names = c.second;
-
         for (auto method_name : class_method_names)
         {
-            auto method_obj = class_method_pair_to_method_obj_map.at(std::make_pair(class_symbol, method_name));
+            auto method_obj = class_method_pair_to_method_obj_map.at({class_symbol, method_name});
 
             // Return type must be defined.
             auto return_type = method_obj.get_return_type();
-            if (return_type != SELF_TYPE && class_name_to_class_map.find(return_type) == class_name_to_class_map.end())
+            if (return_type != SELF_TYPE && !class_name_to_class_map.contains(return_type))
             {
                 semant_error(class_name_to_class_map[class_symbol])
                     << "Return type " << return_type << " does not exist in class table." << std::endl;
@@ -385,7 +373,7 @@ void ClassTable::create_class_to_methods_map()
                 const auto& formal_name = formal->get_name();
 
                 // Formal name should not be in class table.
-                if (class_name_to_class_map.find(formal_name) != class_name_to_class_map.end())
+                if (class_name_to_class_map.contains(formal_name))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
                         << "Formal name " << formal_name << " is already defined in class table." << std::endl;
@@ -398,7 +386,7 @@ void ClassTable::create_class_to_methods_map()
                         << "self is not allowed as an argument name." << std::endl;
                 }
                 // Formal name must not be duplicate.
-                else if (formal_names.find(formal_name) != formal_names.end())
+                else if (formal_names.contains(formal_name))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
                         << "Duplicate formal name: " << formal_name << std::endl;
@@ -419,11 +407,8 @@ void ClassTable::create_class_to_methods_map()
 
     // Now need to verify override rules are followed.
     // That means overriding does not change the signature.
-    for (auto c : class_to_method_names_map)
+    for (auto [class_symbol, class_method_names] : class_to_method_names_map)
     {
-        auto class_symbol = c.first;
-        auto class_method_names = c.second;
-
         auto parent_class_symbol = class_to_parent_map[class_symbol];
         while (parent_class_symbol != No_class && parent_class_symbol != Symbol())
         {
@@ -438,9 +423,9 @@ void ClassTable::create_class_to_methods_map()
             );
             for (auto method_name : common_method_names)
             {
-                auto method_obj = class_method_pair_to_method_obj_map.at(std::make_pair(class_symbol, method_name));
+                auto method_obj = class_method_pair_to_method_obj_map.at({class_symbol, method_name});
                 if (!method_obj.can_override(
-                        class_method_pair_to_method_obj_map.at(std::make_pair(parent_class_symbol, method_name))
+                        class_method_pair_to_method_obj_map.at({parent_class_symbol, method_name})
                     ))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
@@ -459,11 +444,8 @@ void ClassTable::verify_attributes()
 
     std::map<Symbol, std::set<Symbol>> class_to_attr_names_map {};
 
-    for (auto c : class_name_to_class_map)
+    for (auto [class_symbol, class_] : class_name_to_class_map)
     {
-        auto class_symbol = c.first;
-        auto class_ = c.second;
-
         auto features = class_->get_features();
         auto i = features->first();
 
@@ -494,7 +476,7 @@ void ClassTable::verify_attributes()
                 }
                 class_to_attr_names_map[class_symbol].insert(attr_name);
 
-                if (attr_type != prim_slot && class_name_to_class_map.find(attr_type) == class_name_to_class_map.end())
+                if (attr_type != prim_slot && !class_name_to_class_map.contains(attr_type))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
                         << "Attribute type " << attr_type << " does not exist in class table." << std::endl;
@@ -510,11 +492,8 @@ void ClassTable::verify_attributes()
     // then keep that for later type checking. However, for now, we will later be
     // using other data structures to conform to the guidelines for this project.
 
-    for (auto c : class_to_attr_names_map)
+    for (auto [class_symbol, class_attr_names] : class_to_attr_names_map)
     {
-        auto class_symbol = c.first;
-        auto class_attr_names = c.second;
-
         auto parent_class_symbol = class_to_parent_map[class_symbol];
         while (parent_class_symbol != No_class && parent_class_symbol != Symbol())
         {
@@ -586,18 +565,16 @@ void ClassTable::populate_expressions_types() const
     // For each class, populate the types of the expressions.
     std::set<Symbol> default_classes {Object, IO, Int, Bool, Str};
 
-    for (auto c : class_name_to_class_map)
+    for (auto [class_symbol, class_] : class_name_to_class_map)
     {
-        if (default_classes.find(c.first) != default_classes.end())
+        if (default_classes.contains(class_symbol))
         {
             continue;
         }
 
         SymbolTable<Symbol, Symbol> object_environment {};
-        init_object_environment(c.first, object_environment);
+        init_object_environment(class_symbol, object_environment);
 
-        auto class_symbol = c.first;
-        auto class_ = c.second;
         auto features = class_->get_features();
         auto i = features->first();
         try
@@ -690,7 +667,7 @@ Symbol ClassTable::lub(Symbol left_class, Symbol right_class, Symbol current_cla
 
 bool ClassTable::is_valid_class(Symbol class_name) const
 {
-    return class_name_to_class_map.find(class_name) != class_name_to_class_map.end();
+    return class_name_to_class_map.contains(class_name);
 }
 
 Class_ ClassTable::get_class(Symbol class_name) const
@@ -721,7 +698,7 @@ method_class ClassTable::get_method(Symbol class_name, Symbol method_name) const
         if (class_to_method_names_map.at(current_class).find(method_name) !=
             class_to_method_names_map.at(current_class).end())
         {
-            return class_method_pair_to_method_obj_map.at(std::make_pair(current_class, method_name));
+            return class_method_pair_to_method_obj_map.at({current_class, method_name});
         }
         current_class = class_to_parent_map.at(current_class);
     }
@@ -845,7 +822,7 @@ Symbol assign_class::typecheck(
     set_type(rtype);
 
     auto ltype_ptr = object_env.lookup(name);
-    Symbol ltype = Symbol(Object);
+    Symbol ltype = Object;
 
     if (name == self)
     {
@@ -878,7 +855,7 @@ Symbol static_dispatch_class::typecheck(
 {
     auto expr_type = expr->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
 
     if (type_name == SELF_TYPE)
     {
@@ -955,7 +932,7 @@ Symbol dispatch_class::typecheck(
 {
     auto expr_type = expr->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
 
     auto sanitized_expr_type = expr_type == SELF_TYPE ? current_class : expr_type;
 
@@ -1024,7 +1001,7 @@ Symbol cond_class::typecheck(
     auto then_type = then_exp->typecheck(object_env, classtable, current_class);
     auto else_type = else_exp->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
 
     if (pred_type != Bool)
     {
@@ -1046,9 +1023,9 @@ Symbol loop_class::typecheck(
     auto pred_type = pred->typecheck(object_env, classtable, current_class);
     auto body_type = body->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
 
-    if (pred_type != Symbol(Bool))
+    if (pred_type != Bool)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Loop operation requires a Bool predicate." << std::endl;
@@ -1067,7 +1044,7 @@ Symbol typcase_class::typecheck(
     auto i = cases->first();
     while (cases->more(i))
     {
-        if (branch_types.find(cases->nth(i)->get_type_decl()) != branch_types.end())
+        if (branch_types.contains(cases->nth(i)->get_type_decl()))
         {
             classtable.semant_error(classtable.get_class(current_class))
                 << "Case " << cases->nth(i)->get_name() << " has the same type as another case." << std::endl;
@@ -1114,7 +1091,7 @@ Symbol branch_class::typecheck(
 {
     auto expr_type = expr->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
     if (!classtable.is_valid_class(type_decl))
     {
         classtable.semant_error(classtable.get_class(current_class))
@@ -1138,7 +1115,7 @@ Symbol block_class::typecheck(
 )
 {
     auto i = body->first();
-    auto expr_type = Symbol(Object);
+    auto expr_type = Object;
     while (body->more(i))
     {
         expr_type = body->nth(i)->typecheck(object_env, classtable, current_class);
@@ -1153,14 +1130,14 @@ Symbol let_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
 {
     auto init_type = init->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Symbol(Object);
+    auto result_type = Object;
 
     if (type_decl != SELF_TYPE && !classtable.is_valid_class(type_decl))
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "In let expression, type " << type_decl << " not found in class table." << std::endl;
     }
-    else if (type_decl != SELF_TYPE && init_type != Symbol(No_type) &&
+    else if (type_decl != SELF_TYPE && init_type != No_type &&
              !classtable.conforms(init_type, type_decl, current_class))
     {
         classtable.semant_error(classtable.get_class(current_class))
@@ -1189,13 +1166,13 @@ Symbol plus_class::typecheck(
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Int);
+    auto type = Int;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Plus operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1206,13 +1183,13 @@ Symbol sub_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Int);
+    auto type = Int;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Sub operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1223,13 +1200,13 @@ Symbol mul_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Int);
+    auto type = Int;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Mul operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1242,13 +1219,13 @@ Symbol divide_class::typecheck(
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Int);
+    auto type = Int;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Divide operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1259,13 +1236,13 @@ Symbol neg_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
 
-    auto type = Symbol(Int);
+    auto type = Int;
 
-    if (e1_type != Symbol(Int))
+    if (e1_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Neg operation requires an Int argument." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1276,13 +1253,13 @@ Symbol lt_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const ClassT
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Bool);
+    auto type = Bool;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Lt operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1293,14 +1270,16 @@ Symbol eq_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const ClassT
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Bool);
+    auto type = Bool;
 
-    auto restricted_types = std::set<Symbol> {Int, Bool, Str};
+    std::set<Symbol> restricted_types {Int, Bool, Str};
 
     if (restricted_types.find(e1_type) != restricted_types.find(e2_type))
     {
-        classtable.semant_error(classtable.get_class(current_class)) << "Incompatible equality comparison between basic types " << e1_type << " and " << e2_type << "." << std::endl;
-        type = Symbol(Object);
+        classtable.semant_error(classtable.get_class(current_class))
+            << "Incompatible equality comparison between basic types "
+            << e1_type << " and " << e2_type << "." << std::endl;
+        type = Object;
     }
 
     set_type(type);
@@ -1311,13 +1290,13 @@ Symbol leq_class::typecheck(SymbolTable<Symbol, Symbol>& object_env, const Class
 {
     auto e1_type = e1->typecheck(object_env, classtable, current_class);
     auto e2_type = e2->typecheck(object_env, classtable, current_class);
-    auto type = Symbol(Bool);
+    auto type = Bool;
 
-    if (e1_type != Symbol(Int) || e2_type != Symbol(Int))
+    if (e1_type != Int || e2_type != Int)
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Leq operation requires two Int arguments." << std::endl;
-        type = Symbol(Object);
+        type = Object;
     }
 
     set_type(type);
@@ -1330,15 +1309,15 @@ Symbol comp_class::typecheck(
 {
     auto rtype = e1->typecheck(object_env, classtable, current_class);
 
-    set_type(Symbol(Bool));
-    return Symbol(Bool);
+    set_type(Bool);
+    return Bool;
 }
 
 Symbol int_const_class::typecheck(
     SymbolTable<Symbol, Symbol>& object_env, const ClassTable& classtable, Symbol current_class
 )
 {
-    auto type = Symbol(Int);
+    auto type = Int;
     set_type(type);
     return type;
 }
@@ -1347,7 +1326,7 @@ Symbol bool_const_class::typecheck(
     SymbolTable<Symbol, Symbol>& object_env, const ClassTable& classtable, Symbol current_class
 )
 {
-    auto type = Symbol(Bool);
+    auto type = Bool;
     set_type(type);
     return type;
 }
@@ -1356,7 +1335,7 @@ Symbol string_const_class::typecheck(
     SymbolTable<Symbol, Symbol>& object_env, const ClassTable& classtable, Symbol current_class
 )
 {
-    auto type = Symbol(Str);
+    auto type = Str;
     set_type(type);
     return type;
 }
@@ -1383,16 +1362,16 @@ Symbol isvoid_class::typecheck(
 {
     auto rtype = e1->typecheck(object_env, classtable, current_class);
 
-    set_type(Symbol(Bool));
-    return Symbol(Bool);
+    set_type(Bool);
+    return Bool;
 }
 
 Symbol no_expr_class::typecheck(
     SymbolTable<Symbol, Symbol>& object_env, const ClassTable& classtable, Symbol current_class
 )
 {
-    set_type(Symbol(No_type));
-    return Symbol(No_type);
+    set_type(No_type);
+    return No_type;
 }
 
 Symbol object_class::typecheck(
@@ -1400,7 +1379,7 @@ Symbol object_class::typecheck(
 )
 {
     Symbol* object_type_ptr = object_env.lookup(name);
-    Symbol object_type = Symbol(Object);
+    Symbol object_type = Object;
     if (!object_type_ptr)
     {
         classtable.semant_error(classtable.get_class(current_class))
