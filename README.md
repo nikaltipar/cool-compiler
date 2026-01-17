@@ -12,6 +12,8 @@
   <a href="https://github.com/nikaltipar/cool-compiler/issues"><img src="https://img.shields.io/github/issues/nikaltipar/cool-compiler" alt="GitHub Issues"></a>
 </p>
 
+# COOL Compiler
+
 A compiler for the <strong>COOL</strong> (Classroom Object-Oriented Language) programming language,
 originally developed as part of the Stanford CS143 Compilers course,
 now being restructured as a unified C++ project.
