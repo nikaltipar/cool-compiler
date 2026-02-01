@@ -83,9 +83,44 @@ target_compile_definitions(semant_test
         TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/semant_files"
 )
 
-# TODO add tests for cgen phase below.
+add_executable(cgen_test
+    cgen_test.cpp
+)
+
+target_link_libraries(cgen_test
+    PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        -Wl,--start-group
+        cool_lexer
+        cool_parser
+        cool_common
+        cool_semant
+        cool_cgen
+        -Wl,--end-group
+)
+
+target_include_directories(cgen_test
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_BINARY_DIR}/src/lexer
+        ${CMAKE_BINARY_DIR}/src/parser
+        ${CMAKE_BINARY_DIR}/src/semant
+        ${CMAKE_BINARY_DIR}/src/cgen
+)
+
+target_compile_definitions(cgen_test
+    PRIVATE
+        TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/cgen_files"
+)
 
 include(GoogleTest)
 gtest_discover_tests(lexer_test)
 gtest_discover_tests(parser_test)
 gtest_discover_tests(semant_test)
+
+# TODO: add cgen tests for Windows.
+# Might need to build spim from source for Windows.
+IF(LINUX)
+    gtest_discover_tests(cgen_test)
+endif()

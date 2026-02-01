@@ -1379,8 +1379,9 @@ void static_dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol
     this->expr->code(s, class_table, class_name, locals_env);
     emit_bne(ACC, ZERO, continue_label, s);
 
-    emit_load_address(ACC, "str_const0", s);
-    emit_load_imm(T1, 0, s);
+    Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
+    emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
+    emit_load_imm(T1, this->get_line_number(), s);
     emit_jal("_dispatch_abort", s);
     emit_label_def(continue_label, s);
 
@@ -1415,8 +1416,9 @@ void dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_
     const int continue_label = CgenClassTable::get_next_label();
     this->expr->code(s, class_table, class_name, locals_env);
     emit_bne(ACC, ZERO, continue_label, s);
-    emit_load_address(ACC, "str_const0", s);
-    emit_load_imm(T1, 0, s);
+    Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
+    emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
+    emit_load_imm(T1, this->get_line_number(), s);
     emit_jal("_dispatch_abort", s);
     emit_label_def(continue_label, s);
 
@@ -1504,8 +1506,9 @@ void typcase_class::code(ostream& s, CgenClassTableP class_table, Symbol class_n
 
     emit_push(ACC, s);
     emit_bne(ACC, ZERO, non_void_label, s);
-    emit_load_address(ACC, "str_const0", s);
-    emit_load_imm(T1, 0, s);
+    Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
+    emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
+    emit_load_imm(T1, this->get_line_number(), s);
     emit_jal("_case_abort2", s);
     emit_label_def(non_void_label, s);
     emit_load(T1, 0, ACC, s);

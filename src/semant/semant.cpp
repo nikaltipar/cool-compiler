@@ -474,7 +474,7 @@ void ClassTable::verify_attributes()
                 }
                 class_to_attr_names_map[class_symbol].insert(attr_name);
 
-                if (attr_type != prim_slot && !class_name_to_class_map.contains(attr_type))
+                if (attr_type != prim_slot && attr_type != SELF_TYPE && !class_name_to_class_map.contains(attr_type))
                 {
                     semant_error(class_name_to_class_map[class_symbol])
                         << "Attribute type " << attr_type << " does not exist in class table." << std::endl;
@@ -632,6 +632,11 @@ Symbol ClassTable::lub(Symbol left_class, Symbol right_class, Symbol current_cla
     if (right_class == No_type)
     {
         return left_class;
+    }
+
+    if (left_class == SELF_TYPE && right_class == SELF_TYPE)
+    {
+        return SELF_TYPE;
     }
 
     if (left_class == SELF_TYPE)
@@ -1068,16 +1073,7 @@ Symbol typcase_class::typecheck(
         i = cases->next(i);
     }
 
-    if (!classtable.conforms(lub, expr_type == SELF_TYPE ? current_class : expr_type, current_class))
-    {
-        classtable.semant_error(classtable.get_class(current_class))
-            << std::format("Expression type {} is not a subclass of {}.", expr_type->get_string(), lub->get_string())
-            << std::endl;
-    }
-    else
-    {
-        result_type = lub;
-    }
+    result_type = lub;
 
     set_type(result_type);
     return result_type;
@@ -1089,20 +1085,10 @@ Symbol branch_class::typecheck(
 {
     auto expr_type = expr->typecheck(object_env, classtable, current_class);
 
-    auto result_type = Object;
     if (!classtable.is_valid_class(type_decl))
     {
         classtable.semant_error(classtable.get_class(current_class))
             << "Type " << type_decl << " not found in class table." << std::endl;
-    }
-    else if (!classtable.conforms(expr_type, type_decl, current_class))
-    {
-        classtable.semant_error(classtable.get_class(current_class))
-            << "Expression type " << expr_type << " is not a subclass of " << type_decl << "." << std::endl;
-    }
-    else
-    {
-        result_type = type_decl;
     }
 
     return expr_type;
