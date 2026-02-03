@@ -1,2 +1,2 @@
-attroverride.cool:7: Attribute moo in class B is already defined in parrent class A
+attroverride.cool:7: Attribute moo in class B is already defined in parent class A
 Compilation halted due to static semantic errors.
