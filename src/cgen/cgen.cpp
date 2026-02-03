@@ -108,7 +108,6 @@ BoolConst truebool(TRUE);
 
 void program_class::cgen(ostream& os)
 {
-    // spim wants comments to start with '#'
     os << "# start of generated code\n";
 
     initialize_constants();
@@ -133,22 +132,22 @@ void program_class::cgen(ostream& os)
 
 static void emit_load(char* dest_reg, int offset, char* source_reg, ostream& s)
 {
-    s << LW << dest_reg << " " << offset * WORD_SIZE << "(" << source_reg << ")" << endl;
+    s << LW << dest_reg << " " << offset * WORD_SIZE << "(" << source_reg << ")" << std::endl;
 }
 
 static void emit_store(char* source_reg, int offset, char* dest_reg, ostream& s)
 {
-    s << SW << source_reg << " " << offset * WORD_SIZE << "(" << dest_reg << ")" << endl;
+    s << SW << source_reg << " " << offset * WORD_SIZE << "(" << dest_reg << ")" << std::endl;
 }
 
 static void emit_load_imm(char* dest_reg, int val, ostream& s)
 {
-    s << LI << dest_reg << " " << val << endl;
+    s << LI << dest_reg << " " << val << std::endl;
 }
 
 static void emit_load_address(char* dest_reg, char* address, ostream& s)
 {
-    s << LA << dest_reg << " " << address << endl;
+    s << LA << dest_reg << " " << address << std::endl;
 }
 
 static void emit_partial_load_address(char* dest_reg, ostream& s)
@@ -160,76 +159,76 @@ static void emit_load_bool(char* dest, const BoolConst& b, ostream& s)
 {
     emit_partial_load_address(dest, s);
     b.code_ref(s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_load_string(char* dest, StringEntry* str, ostream& s)
 {
     emit_partial_load_address(dest, s);
     str->code_ref(s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_load_int(char* dest, IntEntry* i, ostream& s)
 {
     emit_partial_load_address(dest, s);
     i->code_ref(s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_move(char* dest_reg, char* source_reg, ostream& s)
 {
-    s << MOVE << dest_reg << " " << source_reg << endl;
+    s << MOVE << dest_reg << " " << source_reg << std::endl;
 }
 
 static void emit_neg(char* dest, char* src1, ostream& s)
 {
-    s << NEG << dest << " " << src1 << endl;
+    s << NEG << dest << " " << src1 << std::endl;
 }
 
 static void emit_add(char* dest, char* src1, char* src2, ostream& s)
 {
-    s << ADD << dest << " " << src1 << " " << src2 << endl;
+    s << ADD << dest << " " << src1 << " " << src2 << std::endl;
 }
 
 static void emit_addu(char* dest, char* src1, char* src2, ostream& s)
 {
-    s << ADDU << dest << " " << src1 << " " << src2 << endl;
+    s << ADDU << dest << " " << src1 << " " << src2 << std::endl;
 }
 
 static void emit_addiu(char* dest, char* src1, int imm, ostream& s)
 {
-    s << ADDIU << dest << " " << src1 << " " << imm << endl;
+    s << ADDIU << dest << " " << src1 << " " << imm << std::endl;
 }
 
 static void emit_div(char* dest, char* src1, char* src2, ostream& s)
 {
-    s << DIV << dest << " " << src1 << " " << src2 << endl;
+    s << DIV << dest << " " << src1 << " " << src2 << std::endl;
 }
 
 static void emit_mul(char* dest, char* src1, char* src2, ostream& s)
 {
-    s << MUL << dest << " " << src1 << " " << src2 << endl;
+    s << MUL << dest << " " << src1 << " " << src2 << std::endl;
 }
 
 static void emit_sub(char* dest, char* src1, char* src2, ostream& s)
 {
-    s << SUB << dest << " " << src1 << " " << src2 << endl;
+    s << SUB << dest << " " << src1 << " " << src2 << std::endl;
 }
 
 static void emit_sll(char* dest, char* src1, int num, ostream& s)
 {
-    s << SLL << dest << " " << src1 << " " << num << endl;
+    s << SLL << dest << " " << src1 << " " << num << std::endl;
 }
 
 static void emit_jalr(char* dest, ostream& s)
 {
-    s << JALR << "\t" << dest << endl;
+    s << JALR << "\t" << dest << std::endl;
 }
 
 static void emit_jal(char* address, ostream& s)
 {
-    s << JAL << address << endl;
+    s << JAL << address << std::endl;
 }
 
 static void emit_jal_raw(ostream& s)
@@ -239,12 +238,12 @@ static void emit_jal_raw(ostream& s)
 
 static void emit_return(ostream& s)
 {
-    s << RET << endl;
+    s << RET << std::endl;
 }
 
 static void emit_gc_assign(ostream& s)
 {
-    s << JAL << "_GenGC_Assign" << endl;
+    s << JAL << "_GenGC_Assign" << std::endl;
 }
 
 static void emit_disptable_ref(Symbol sym, ostream& s)
@@ -266,7 +265,7 @@ static void emit_jump(int l, ostream& s)
 {
     s << JUMP;
     emit_label_ref(l, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_protobj_ref(Symbol sym, ostream& s)
@@ -281,69 +280,69 @@ static void emit_method_ref(Symbol classname, Symbol methodname, ostream& s)
 
 static void emit_method_def(Symbol classname, Symbol methodname, ostream& s)
 {
-    s << classname << METHOD_SEP << methodname << ":" << endl;
+    s << classname << METHOD_SEP << methodname << ":" << std::endl;
 }
 
 static void emit_label_def(int l, ostream& s)
 {
     emit_label_ref(l, s);
-    s << ":" << endl;
+    s << ":" << std::endl;
 }
 
 static void emit_beqz(char* source, int label, ostream& s)
 {
     s << BEQZ << source << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_beq(char* src1, char* src2, int label, ostream& s)
 {
     s << BEQ << src1 << " " << src2 << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_bne(char* src1, char* src2, int label, ostream& s)
 {
     s << BNE << src1 << " " << src2 << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_bleq(char* src1, char* src2, int label, ostream& s)
 {
     s << BLEQ << src1 << " " << src2 << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_blt(char* src1, char* src2, int label, ostream& s)
 {
     s << BLT << src1 << " " << src2 << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_blti(char* src1, int imm, int label, ostream& s)
 {
     s << BLT << src1 << " " << imm << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_bgti(char* src1, int imm, int label, ostream& s)
 {
     s << BGT << src1 << " " << imm << " ";
     emit_label_ref(label, s);
-    s << endl;
+    s << std::endl;
 }
 
 static void emit_branch(int l, ostream& s)
 {
     s << BRANCH;
     emit_label_ref(l, s);
-    s << endl;
+    s << std::endl;
 }
 
 //
@@ -385,7 +384,7 @@ static void emit_test_collector(ostream& s)
     emit_push(ACC, s);
     emit_move(ACC, SP, s);  // stack end
     emit_move(A1, ZERO, s); // allocate nothing
-    s << JAL << gc_collect_names[cgen_Memmgr] << endl;
+    s << JAL << gc_collect_names[cgen_Memmgr] << std::endl;
     emit_addiu(SP, SP, 4, s);
     emit_load(ACC, 0, SP, s);
 }
@@ -394,7 +393,7 @@ static void emit_gc_check(char* source, ostream& s)
 {
     if (source != (char*)A1)
         emit_move(A1, source, s);
-    s << JAL << "_gc_check" << endl;
+    s << JAL << "_gc_check" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -436,18 +435,18 @@ void StringEntry::code_def(ostream& s, int stringclasstag)
     IntEntryP lensym = inttable.add_int(len);
 
     // Add -1 eye catcher
-    s << WORD << "-1" << endl;
+    s << WORD << "-1" << std::endl;
 
     code_ref(s);
-    s << LABEL                                                              // label
-      << WORD << stringclasstag << endl                                     // tag
-      << WORD << (DEFAULT_OBJFIELDS + STRING_SLOTS + (len + 4) / 4) << endl // size
+    s << LABEL                                                                   // label
+      << WORD << stringclasstag << std::endl                                     // tag
+      << WORD << (DEFAULT_OBJFIELDS + STRING_SLOTS + (len + 4) / 4) << std::endl // size
       << WORD;
     emit_disptable_ref(Str, s);
-    s << endl;
+    s << std::endl;
     s << WORD;
     lensym->code_ref(s);
-    s << endl;                    // string length
+    s << std::endl;               // string length
     emit_string_constant(s, str); // ascii string
     s << ALIGN;                   // align to word
 }
@@ -479,17 +478,17 @@ void IntEntry::code_ref(ostream& s)
 void IntEntry::code_def(ostream& s, int intclasstag)
 {
     // Add -1 eye catcher
-    s << WORD << "-1" << endl;
+    s << WORD << "-1" << std::endl;
 
     code_ref(s);
-    s << LABEL                                           // label
-      << WORD << intclasstag << endl                     // class tag
-      << WORD << (DEFAULT_OBJFIELDS + INT_SLOTS) << endl // object size
+    s << LABEL                                                // label
+      << WORD << intclasstag << std::endl                     // class tag
+      << WORD << (DEFAULT_OBJFIELDS + INT_SLOTS) << std::endl // object size
       << WORD;
     emit_disptable_ref(Int, s);
-    s << endl;
+    s << std::endl;
 
-    s << WORD << str << endl; // integer value
+    s << WORD << str << std::endl; // integer value
 }
 
 //
@@ -525,17 +524,17 @@ void BoolConst::code_ref(ostream& s) const
 void BoolConst::code_def(ostream& s, int boolclasstag)
 {
     // Add -1 eye catcher
-    s << WORD << "-1" << endl;
+    s << WORD << "-1" << std::endl;
 
     code_ref(s);
-    s << LABEL                                            // label
-      << WORD << boolclasstag << endl                     // class tag
-      << WORD << (DEFAULT_OBJFIELDS + BOOL_SLOTS) << endl // object size
+    s << LABEL                                                 // label
+      << WORD << boolclasstag << std::endl                     // class tag
+      << WORD << (DEFAULT_OBJFIELDS + BOOL_SLOTS) << std::endl // object size
       << WORD;
     emit_disptable_ref(Bool, s);
-    s << endl;
+    s << std::endl;
 
-    s << WORD << val << endl; // value (0 or 1)
+    s << WORD << val << std::endl; // value (0 or 1)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -562,33 +561,33 @@ void CgenClassTable::code_global_data()
     //
     // The following global names must be defined first.
     //
-    str << GLOBAL << CLASSNAMETAB << endl;
+    str << GLOBAL << CLASSNAMETAB << std::endl;
     str << GLOBAL;
     emit_protobj_ref(main, str);
-    str << endl;
+    str << std::endl;
     str << GLOBAL;
     emit_protobj_ref(integer, str);
-    str << endl;
+    str << std::endl;
     str << GLOBAL;
     emit_protobj_ref(string, str);
-    str << endl;
+    str << std::endl;
     str << GLOBAL;
     falsebool.code_ref(str);
-    str << endl;
+    str << std::endl;
     str << GLOBAL;
     truebool.code_ref(str);
-    str << endl;
-    str << GLOBAL << INTTAG << endl;
-    str << GLOBAL << BOOLTAG << endl;
-    str << GLOBAL << STRINGTAG << endl;
+    str << std::endl;
+    str << GLOBAL << INTTAG << std::endl;
+    str << GLOBAL << BOOLTAG << std::endl;
+    str << GLOBAL << STRINGTAG << std::endl;
 
     //
     // We also need to know the tag of the Int, String, and Bool classes
     // during code generation.
     //
-    str << INTTAG << LABEL << WORD << intclasstag << endl;
-    str << BOOLTAG << LABEL << WORD << boolclasstag << endl;
-    str << STRINGTAG << LABEL << WORD << stringclasstag << endl;
+    str << INTTAG << LABEL << WORD << intclasstag << std::endl;
+    str << BOOLTAG << LABEL << WORD << boolclasstag << std::endl;
+    str << STRINGTAG << LABEL << WORD << stringclasstag << std::endl;
 }
 
 //***************************************************
@@ -600,17 +599,20 @@ void CgenClassTable::code_global_data()
 
 void CgenClassTable::code_global_text()
 {
-    str << GLOBAL << HEAP_START << endl << HEAP_START << LABEL << WORD << 0 << endl << "\t.text" << endl << GLOBAL;
+    str << GLOBAL << HEAP_START << std::endl
+        << HEAP_START << LABEL << WORD << 0 << std::endl
+        << "\t.text" << std::endl
+        << GLOBAL;
     emit_init_ref(idtable.add_string("Main"), str);
-    str << endl << GLOBAL;
+    str << std::endl << GLOBAL;
     emit_init_ref(idtable.add_string("Int"), str);
-    str << endl << GLOBAL;
+    str << std::endl << GLOBAL;
     emit_init_ref(idtable.add_string("String"), str);
-    str << endl << GLOBAL;
+    str << std::endl << GLOBAL;
     emit_init_ref(idtable.add_string("Bool"), str);
-    str << endl << GLOBAL;
+    str << std::endl << GLOBAL;
     emit_method_ref(idtable.add_string("Main"), idtable.add_string("main"), str);
-    str << endl;
+    str << std::endl;
 }
 
 void CgenClassTable::code_bools(int boolclasstag)
@@ -624,15 +626,15 @@ void CgenClassTable::code_select_gc()
     //
     // Generate GC choice constants (pointers to GC functions)
     //
-    str << GLOBAL << "_MemMgr_INITIALIZER" << endl;
-    str << "_MemMgr_INITIALIZER:" << endl;
-    str << WORD << gc_init_names[cgen_Memmgr] << endl;
-    str << GLOBAL << "_MemMgr_COLLECTOR" << endl;
-    str << "_MemMgr_COLLECTOR:" << endl;
-    str << WORD << gc_collect_names[cgen_Memmgr] << endl;
-    str << GLOBAL << "_MemMgr_TEST" << endl;
-    str << "_MemMgr_TEST:" << endl;
-    str << WORD << (cgen_Memmgr_Test == GC_TEST) << endl;
+    str << GLOBAL << "_MemMgr_INITIALIZER" << std::endl;
+    str << "_MemMgr_INITIALIZER:" << std::endl;
+    str << WORD << gc_init_names[cgen_Memmgr] << std::endl;
+    str << GLOBAL << "_MemMgr_COLLECTOR" << std::endl;
+    str << "_MemMgr_COLLECTOR:" << std::endl;
+    str << WORD << gc_collect_names[cgen_Memmgr] << std::endl;
+    str << GLOBAL << "_MemMgr_TEST" << std::endl;
+    str << "_MemMgr_TEST:" << std::endl;
+    str << WORD << (cgen_Memmgr_Test == GC_TEST) << std::endl;
 }
 
 //********************************************************
@@ -668,7 +670,7 @@ void CgenClassTable::code_prototype_objects()
 
 void CgenClassTable::code_class_name_table()
 {
-    str << CLASSNAMETAB << ":" << endl;
+    str << CLASSNAMETAB << ":" << std::endl;
     apply_in_tag_order([](CgenNodeP node, int tag, ostream& str) { node->code_class_name_entry(tag, str); });
     str << std::endl;
 }
@@ -680,7 +682,7 @@ void CgenClassTable::code_dispatch_table()
 
 void CgenClassTable::code_class_obj_table()
 {
-    str << CLASSOBJTAB << ":" << endl;
+    str << CLASSOBJTAB << ":" << std::endl;
     apply_in_tag_order([](CgenNodeP node, int tag, ostream& str) { node->code_class_obj_entry(tag, str); });
     str << std::endl;
 }
@@ -689,10 +691,10 @@ void CgenNode::code_class_obj_entry(int tag, ostream& str)
 {
     str << WORD;
     emit_protobj_ref(name, str);
-    str << endl;
+    str << std::endl;
     str << WORD;
     emit_init_ref(name, str);
-    str << endl;
+    str << std::endl;
 }
 
 CgenClassTable::CgenClassTable(Classes classes, ostream& s)
@@ -954,7 +956,7 @@ void CgenClassTable::build_inheritance_tree()
             std::cout << " and children: " << std::endl;
             for (auto child : node->get_children())
             {
-                std::cout << "  " << child->get_name()->get_string() << endl;
+                std::cout << "  " << child->get_name()->get_string() << std::endl;
             }
         }
     }
@@ -990,6 +992,7 @@ void CgenClassTable::construct_attribute_tables()
 {
     // We need to start applying from root to children.
     // This is to make sure each child has the parent's attributes available.
+    // Inherited attributes always appear in the same position.
     apply_from_root([](CgenNodeP node) { node->construct_attribute_table(); });
 }
 
@@ -997,12 +1000,16 @@ void CgenClassTable::construct_dispatch_tables()
 {
     // We need to start applying from root to children.
     // This is to make sure each child has the parent's methods available.
+    // Overridden methods always appear in the same position.
     apply_from_root([](CgenNodeP node) { node->construct_dispatch_table(); });
 }
 
 void CgenClassTable::apply_from_root(std::function<void(CgenNodeP)> func)
 {
     std::queue<CgenNodeP> queue {};
+
+    // Using a queue means we first process the parent, then the children.
+    // Each child will always have the parent's results available.
     queue.push(root());
 
     while (!queue.empty())
@@ -1022,6 +1029,9 @@ void CgenClassTable::apply_from_root(std::function<void(CgenNodeP)> func)
 void CgenNode::construct_attribute_table()
 {
     auto parent_nd = get_parentnd();
+
+    // This is guaranteed to exist if the correct order of construction is followed.
+    // See apply_from_root.
     attribute_table = parent_nd->get_attribute_table();
     attribute_offset_map = parent_nd->get_attribute_offset_map();
 
@@ -1057,13 +1067,15 @@ void CgenNode::construct_attribute_table()
 void CgenNode::construct_dispatch_table()
 {
     auto parent_nd = get_parentnd();
+
+    // This is guaranteed to exist if the correct order of construction is followed.
+    // See apply_from_root.
     dispatch_table = parent_nd->get_dispatch_table();
     dispatch_offset_map = parent_nd->get_dispatch_offset_map();
 
     auto i = features->first();
     while (features->more(i))
     {
-
         auto feature = features->nth(i);
         auto method_ptr = dynamic_cast<method_class*>(feature);
         if (method_ptr == nullptr)
@@ -1099,6 +1111,8 @@ void CgenNode::construct_dispatch_table()
 
 void CgenClassTable::apply_in_tag_order(std::function<void(CgenNodeP, int, ostream&)> func)
 {
+    // Each class will have its own tag.
+    // Process in order.
     for (size_t i = 0; i < class_nodes.size(); i++)
     {
         func(class_nodes[i], i, str);
@@ -1107,7 +1121,7 @@ void CgenClassTable::apply_in_tag_order(std::function<void(CgenNodeP, int, ostre
 
 void CgenNode::code_prototype_object(int tag, ostream& str)
 {
-    str << WORD << -1 << " # For GC" << std::endl;
+    str << WORD << -1 << std::endl;
     emit_protobj_ref(name, str);
     str << LABEL;
     str << WORD << tag << std::endl;
@@ -1136,7 +1150,7 @@ void CgenNode::code_prototype_object(int tag, ostream& str)
         {
             str << 0;
         }
-        str << " # attribute " << attr_ptr->get_name()->get_string() << std::endl;
+        str << std::endl;
     }
 
     str << std::endl;
@@ -1191,13 +1205,9 @@ void CgenNode::code_object_initializer(int tag, ostream& str, CgenClassTableP cl
         auto [symbol, attr_ptr] = attribute_table[offset];
         Tracker locals_env {}; // Standard tracker since we only push RA (like normal
                                // methods)
-        str << "# a " << symbol << endl;
         if (dynamic_cast<no_expr_class*>(attr_ptr->get_init()) == nullptr)
         {
-            str << "# c " << symbol << endl;
             attr_ptr->get_init()->code(str, class_table, class_name, locals_env);
-
-            str << "# b " << symbol << endl;
             emit_store(ACC, DEFAULT_OBJFIELDS + offset, SELF, str);
         }
     }
@@ -1256,8 +1266,7 @@ void CgenNode::code_class_method(ostream& s, CgenClassTableP class_table, Symbol
         locals_env.exitscope();
 
         emit_pop(RA, s);
-        s << "# remove formals " << method_ptr->get_formals()->len() << method_ptr->get_name()->get_string()
-          << std::endl;
+        s << std::endl;
         emit_addiu(SP, SP, method_ptr->get_formals()->len() * 4, s);
         emit_return(s);
     }
@@ -1267,43 +1276,63 @@ void CgenNode::code_class_method(ostream& s, CgenClassTableP class_table, Symbol
 void CgenClassTable::code()
 {
     if (cgen_debug)
-        cout << "coding global data" << endl;
+    {
+        cout << "coding global data" << std::endl;
+    }
     code_global_data();
 
     if (cgen_debug)
-        cout << "choosing gc" << endl;
+    {
+        cout << "choosing gc" << std::endl;
+    }
     code_select_gc();
 
     if (cgen_debug)
-        cout << "coding constants" << endl;
+    {
+        cout << "coding constants" << std::endl;
+    }
     code_constants();
 
     if (cgen_debug)
-        cout << "coding prototype objects" << endl;
+    {
+        cout << "coding prototype objects" << std::endl;
+    }
     code_prototype_objects();
 
     if (cgen_debug)
-        cout << "coding class name table" << endl;
+    {
+        cout << "coding class name table" << std::endl;
+    }
     code_class_name_table();
 
     if (cgen_debug)
-        cout << "coding dispatch tables" << endl;
+    {
+        cout << "coding dispatch tables" << std::endl;
+    }
     code_dispatch_table();
 
     if (cgen_debug)
-        cout << "coding class object table" << endl;
+    {
+        cout << "coding class object table" << std::endl;
+    }
     code_class_obj_table();
 
     if (cgen_debug)
-        cout << "coding global text" << endl;
+    {
+        cout << "coding global text" << std::endl;
+    }
     code_global_text();
 
     if (cgen_debug)
-        cout << "coding object initializer" << endl;
+    {
+        cout << "coding object initializer" << std::endl;
+    }
     code_object_initializers();
 
     if (cgen_debug)
-        cout << "coding class methods" << endl;
+    {
+        cout << "coding class methods" << std::endl;
+    }
     code_class_methods();
 
     // TODO find out how to make mips work without the below.
@@ -1339,13 +1368,11 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct)
 
 void assign_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# assign_class::code" << endl;
     this->expr->code(s, class_table, class_name, locals_env);
 
     auto* symbol_entry = locals_env.lookup(name);
     if (symbol_entry != nullptr)
     {
-        s << "# assign_class::code: symbol_entry" << std::endl;
         emit_store(ACC, *symbol_entry, FP, s);
         return;
     }
@@ -1354,9 +1381,12 @@ void assign_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
     auto it = parameter_offsets.find(name);
     if (it != parameter_offsets.end())
     {
-        s << "# assign_class::code: parameter_offsets" << std::endl;
         emit_store(ACC, it->second + DEFAULT_OBJFIELDS, SELF, s);
         emit_addiu(A1, SELF, (it->second + DEFAULT_OBJFIELDS) * 4, s);
+
+        // Call the GC assignment barrier.
+        // Not need for locals, since the stack is scanned on
+        // garbage collection.
         emit_gc_assign(s);
         return;
     }
@@ -1364,10 +1394,10 @@ void assign_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
 
 void static_dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# static_dispatch_class::code" << endl;
     emit_push(SELF, s);
     emit_push(FP, s);
 
+    // Evaluate and push arguments.
     for (int i = actual->first(); actual->more(i); i = actual->next(i))
     {
         actual->nth(i)->code(s, class_table, class_name, locals_env);
@@ -1379,6 +1409,8 @@ void static_dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol
     this->expr->code(s, class_table, class_name, locals_env);
     emit_bne(ACC, ZERO, continue_label, s);
 
+    // Abort if the expression evaluates to void.
+    // This is a runtime error described by the standard.
     Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
     emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
     emit_load_imm(T1, this->get_line_number(), s);
@@ -1390,7 +1422,7 @@ void static_dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol
 
     emit_partial_load_address(T1, s);
     emit_disptable_ref(type, s);
-    s << endl;
+    s << std::endl;
 
     auto offset = class_table->get_node_from_symbol(type)->get_dispatch_offset_map().at(this->name);
 
@@ -1403,7 +1435,6 @@ void static_dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol
 
 void dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# dispatch_class::code" << endl;
     emit_push(SELF, s);
     emit_push(FP, s);
 
@@ -1416,12 +1447,18 @@ void dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_
     const int continue_label = CgenClassTable::get_next_label();
     this->expr->code(s, class_table, class_name, locals_env);
     emit_bne(ACC, ZERO, continue_label, s);
+
+    // Abort if the expression evaluates to void.
+    // This is a runtime error described by the standard.
     Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
     emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
     emit_load_imm(T1, this->get_line_number(), s);
     emit_jal("_dispatch_abort", s);
     emit_label_def(continue_label, s);
 
+    // Static and dynamic types might be different.
+    // However, a given method has the same offset in the dispatch table.
+    // There I can just look at the static type to evaluate this information.
     auto type = this->expr->get_type();
     emit_move(SELF, ACC, s);
     if (type == SELF_TYPE)
@@ -1429,7 +1466,7 @@ void dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_
         type = class_name;
     }
     emit_load(T1, 2, ACC, s);
-    s << " # Load dispatch table address " << this->name->get_string() << endl;
+    s << std::endl;
 
     auto offset = class_table->get_node_from_symbol(type)->get_dispatch_offset_map().at(this->name);
 
@@ -1442,7 +1479,6 @@ void dispatch_class::code(ostream& s, CgenClassTableP class_table, Symbol class_
 
 void cond_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# cond_class::code" << endl;
     const int false_label = CgenClassTable::get_next_label();
     const int end_label = CgenClassTable::get_next_label();
 
@@ -1458,7 +1494,6 @@ void cond_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
 
 void loop_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# loop_class::code" << endl;
     const int loop_label = CgenClassTable::get_next_label();
     const int exit_label = CgenClassTable::get_next_label();
 
@@ -1476,8 +1511,11 @@ void loop_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
 
 void typcase_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# typcase_class::code" << endl;
-
+    // We need to choose the correct branch.
+    // The dynamic type of the expression needs to conform to the type of the branch.
+    // Most specific branch is used.
+    // Sort branches by inheritance depth (deepest first).
+    // This ensured most specific branches will be evaluated first.
     std::vector<std::pair<branch_class*, int>> branch_depths {};
     branch_depths.reserve(cases->len());
     for (int i = cases->first(); cases->more(i); i = cases->next(i))
@@ -1506,6 +1544,9 @@ void typcase_class::code(ostream& s, CgenClassTableP class_table, Symbol class_n
 
     emit_push(ACC, s);
     emit_bne(ACC, ZERO, non_void_label, s);
+
+    // Abort if the expression evaluates to void.
+    // This is a runtime error described by the standard.
     Symbol filename = class_table->get_node_from_symbol(class_name)->get_filename();
     emit_load_string(ACC, stringtable.lookup_string(filename->get_string()), s);
     emit_load_imm(T1, this->get_line_number(), s);
@@ -1542,6 +1583,9 @@ void typcase_class::code(ostream& s, CgenClassTableP class_table, Symbol class_n
         emit_jump(branch_exit_label, s);
         emit_label_def(branch_do_label, s);
 
+        // For case handling, we need a new scope.
+        // Add the variable of the case to the scope and evaluate
+        // the expression of the chosen branch.
         locals_env.enterscope();
         locals_env.add_local_id(branch->get_name());
 
@@ -1558,13 +1602,11 @@ void typcase_class::code(ostream& s, CgenClassTableP class_table, Symbol class_n
         emit_label_def(branch_exit_label, s);
     }
     emit_jal("_case_abort", s);
-
     emit_label_def(case_exit_label, s);
 }
 
 void block_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# block_class::code" << endl;
     for (int i = body->first(); body->more(i); i = body->next(i))
     {
         body->nth(i)->code(s, class_table, class_name, locals_env);
@@ -1573,7 +1615,6 @@ void block_class::code(ostream& s, CgenClassTableP class_table, Symbol class_nam
 
 void let_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# let_class::code" << endl;
     locals_env.enterscope();
 
     if (dynamic_cast<no_expr_class*>(this->init) == nullptr)
@@ -1582,6 +1623,10 @@ void let_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
     }
     else
     {
+        // If the initialization is not provided, we need to
+        // use the default value for the type.
+        // We can point to default objects.
+        // These are immutable.
         if (type_decl == Int)
         {
             emit_load_int(ACC, inttable.lookup_string("0"), s);
@@ -1596,6 +1641,7 @@ void let_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
         }
         else
         {
+            // Initialize to void.
             emit_load_imm(ACC, 0, s);
         }
     }
@@ -1610,7 +1656,6 @@ void let_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
 
 void plus_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# plus_class::code" << endl;
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
 
@@ -1618,8 +1663,10 @@ void plus_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
     emit_load(T2, DEFAULT_OBJFIELDS, ACC, s);
     emit_pop(ACC, s);
     emit_jal_raw(s);
+
+    // Must create new object to preserve immutability of Int.
     emit_method_ref(Object, ::copy, s);
-    s << endl;
+    s << std::endl;
     emit_load(T1, DEFAULT_OBJFIELDS, ACC, s);
 
     emit_add(T1, T1, T2, s);
@@ -1628,7 +1675,6 @@ void plus_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
 
 void sub_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# sub_class::code" << endl;
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
 
@@ -1636,8 +1682,10 @@ void sub_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
     emit_load(T2, DEFAULT_OBJFIELDS, ACC, s);
     emit_pop(ACC, s);
     emit_jal_raw(s);
+
+    // Must create new object to preserve immutability of Int.
     emit_method_ref(Object, ::copy, s);
-    s << endl;
+    s << std::endl;
     emit_load(T1, DEFAULT_OBJFIELDS, ACC, s);
 
     emit_sub(T1, T1, T2, s);
@@ -1646,7 +1694,6 @@ void sub_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
 
 void mul_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# mul_class::code" << endl;
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
 
@@ -1654,8 +1701,10 @@ void mul_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
     emit_load(T2, DEFAULT_OBJFIELDS, ACC, s);
     emit_pop(ACC, s);
     emit_jal_raw(s);
+
+    // Must create new object to preserve immutability of Int.
     emit_method_ref(Object, ::copy, s);
-    s << endl;
+    s << std::endl;
     emit_load(T1, DEFAULT_OBJFIELDS, ACC, s);
 
     emit_mul(T1, T1, T2, s);
@@ -1664,7 +1713,6 @@ void mul_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
 
 void divide_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# divide_class::code" << endl;
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
 
@@ -1672,8 +1720,10 @@ void divide_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
     emit_load(T2, DEFAULT_OBJFIELDS, ACC, s);
     emit_pop(ACC, s);
     emit_jal_raw(s);
+
+    // Must create new object to preserve immutability of Int.
     emit_method_ref(Object, ::copy, s);
-    s << endl;
+    s << std::endl;
     emit_load(T1, DEFAULT_OBJFIELDS, ACC, s);
 
     emit_div(T2, T1, T2, s);
@@ -1683,11 +1733,12 @@ void divide_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
 
 void neg_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# neg_class::code" << endl;
     this->e1->code(s, class_table, class_name, locals_env);
     emit_jal_raw(s);
+
+    // Must create new object to preserve immutability of Int.
     emit_method_ref(Object, ::copy, s);
-    s << endl;
+    s << std::endl;
     emit_load(T1, DEFAULT_OBJFIELDS, ACC, s);
     emit_neg(T1, T1, s);
     emit_store(T1, DEFAULT_OBJFIELDS, ACC, s);
@@ -1695,7 +1746,6 @@ void neg_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
 
 void lt_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# lt_class::code" << endl;
     const int exit_label = CgenClassTable::get_next_label();
 
     this->e1->code(s, class_table, class_name, locals_env);
@@ -1714,8 +1764,6 @@ void lt_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, 
 
 void eq_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# eq_class::code" << endl;
-
     const int exit_label = CgenClassTable::get_next_label();
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
@@ -1723,6 +1771,9 @@ void eq_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, 
     emit_move(T2, ACC, s);
     emit_pop(ACC, s);
     emit_move(T1, ACC, s);
+
+    // Compare whether the objects are identical first.
+    // If not, compare values for basic types.
 
     emit_load_bool(ACC, truebool, s);
     emit_beq(T1, T2, exit_label, s);
@@ -1733,7 +1784,6 @@ void eq_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, 
 
 void leq_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# leq_class::code" << endl;
     const int exit_label = CgenClassTable::get_next_label();
     this->e1->code(s, class_table, class_name, locals_env);
     emit_push(ACC, s);
@@ -1750,7 +1800,6 @@ void leq_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name,
 
 void comp_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# comp_class::code" << endl;
     const int exit_label = CgenClassTable::get_next_label();
 
     this->e1->code(s, class_table, class_name, locals_env);
@@ -1764,40 +1813,51 @@ void comp_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
 
 void int_const_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# int_const_class::code" << endl;
     emit_load_int(ACC, inttable.lookup_string(token->get_string()), s);
 }
 
 void string_const_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# string_const_class::code" << endl;
     emit_load_string(ACC, stringtable.lookup_string(token->get_string()), s);
 }
 
 void bool_const_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# bool_const_class::code" << endl;
     emit_load_bool(ACC, BoolConst(val), s);
 }
 
 void new__class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# new__class::code" << endl;
     emit_push(FP, s);
     emit_push(SELF, s);
+
+    // For SELF_TYPE, uses the class object table to dynamically determine the actual type
+    // at runtime (the type of the current object, not the static class).
+    // This is the case for the class object itself.
     if (type_name == SELF_TYPE)
     {
+        // Get the tag of the current object.
         emit_load(T2, 0, SELF, s);
         emit_load_address(T1, CLASSOBJTAB, s);
+
+        // Given the tag, we need to multiply by 8.
+        // Each tag corresponds to a prototype object and an init function.
+        // 1 byte each.
         emit_sll(T2, T2, 3, s);
         emit_addu(T1, T1, T2, s);
+
+        // Load the prototype object.
         emit_load(ACC, 0, T1, s);
         emit_push(T1, s);
         emit_jal_raw(s);
+
+        // Copy the prototype object.
         emit_method_ref(Object, ::copy, s);
-        s << endl;
+        s << std::endl;
         emit_pop(T1, s);
         emit_move(SELF, ACC, s);
+
+        // Load and call the init function.
         emit_addiu(T1, T1, 4, s);
         emit_load(T1, 0, T1, s);
         emit_jalr(T1, s);
@@ -1806,14 +1866,14 @@ void new__class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
     {
         emit_partial_load_address(ACC, s);
         emit_protobj_ref(type_name, s);
-        s << endl;
+        s << std::endl;
         emit_jal_raw(s);
         emit_method_ref(Object, ::copy, s);
-        s << endl;
+        s << std::endl;
         emit_move(SELF, ACC, s);
         emit_jal_raw(s);
         emit_init_ref(type_name, s);
-        s << endl;
+        s << std::endl;
     }
     emit_pop(SELF, s);
     emit_pop(FP, s);
@@ -1821,7 +1881,6 @@ void new__class::code(ostream& s, CgenClassTableP class_table, Symbol class_name
 
 void isvoid_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# isvoid_class::code" << endl;
     const int exit_label = CgenClassTable::get_next_label();
 
     this->e1->code(s, class_table, class_name, locals_env);
@@ -1834,25 +1893,24 @@ void isvoid_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
 
 void no_expr_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# no_expr_class::code" << endl;
 }
 
 void object_class::code(ostream& s, CgenClassTableP class_table, Symbol class_name, Tracker& locals_env)
 {
-    s << "# object_class::code" << endl;
-
-    s << "#object_class::code: " << name->get_string() << std::endl;
+    // Looks up identifier x in three places (in order):
+    // 1. Local variables/let bindings (on stack relative to $fp)
+    // 2. Formal parameters (on stack relative to $fp)
+    // 3. Attributes of current object (in SELF at fixed offset)
+    // Special case: "self" always returns $s0 (current object pointer).
     if (name == self)
     {
         emit_move(ACC, SELF, s);
-        s << "#object_class::code: SELF" << std::endl;
         return;
     }
 
     auto* symbol_entry = locals_env.lookup(name);
     if (symbol_entry != nullptr)
     {
-        s << "# object_class::code: symbol_entry" << std::endl;
         emit_load(ACC, *symbol_entry, FP, s);
         return;
     }
@@ -1861,7 +1919,6 @@ void object_class::code(ostream& s, CgenClassTableP class_table, Symbol class_na
     auto it = parameter_offsets.find(name);
     if (it != parameter_offsets.end())
     {
-        s << "# object_class::code: parameter_offsets" << std::endl;
         emit_load(ACC, it->second + DEFAULT_OBJFIELDS, SELF, s);
         return;
     }
